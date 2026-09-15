@@ -1,4 +1,4 @@
-# skill-repo-store
+# skillstore
 
 A static site generator for a "skill marketplace": point it at a directory of
 [Claude Code skills](https://docs.claude.com/), each with a `SKILL.md`
@@ -10,8 +10,8 @@ host the output; only the `npx` install step touches the network.
 ## Quickstart
 
 ```bash
-go build -o skill-repo-store .
-./skill-repo-store --skill-dir skills --output-dir public
+go build -o skillstore .
+./skillstore --skill-dir skills --output-dir public
 ```
 
 This scans `skills/` (46 real skills ship in this repo as sample/fixture
@@ -26,10 +26,10 @@ python3 -m http.server -d public 8080
 ## CLI
 
 ```
-skill-repo-store [flags]
+skillstore [flags]
 
 Flags:
-  -h, --help                help for skill-repo-store
+  -h, --help                help for skillstore
       --output-dir string   directory to write the generated static site into (default "public")
       --skill-dir string    directory containing skill subdirectories to scan (default "skills")
 ```
@@ -75,11 +75,11 @@ A theme toggle in the header switches between the default light theme and a
 Every skill's detail panel shows a command like:
 
 ```bash
-npx skill-repo-store-install https://your-site.example/downloads/vue.zip --dest ./skills
+npx skillstore-install https://your-site.example/downloads/vue.zip --dest ./skills
 ```
 
 The `installer/` directory is that standalone npm package
-(`skill-repo-store-install`). It fetches a zip by URL and extracts it into
+(`skillstore-install`). It fetches a zip by URL and extracts it into
 `--dest` (default `./skills`). See [installer/README.md](installer/README.md)
 for details.
 

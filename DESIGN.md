@@ -1,5 +1,5 @@
 ---
-name: Skill Repo Store
+name: Skillstore
 description: A static marketplace for Claude Code skills — browse, search, install.
 colors:
   bg-light: "oklch(98.3% 0.004 265)"
@@ -74,7 +74,7 @@ components:
     backgroundColor: "{colors.accent-hover-light}"
 ---
 
-# Design System: Skill Repo Store
+# Design System: Skillstore
 
 ## 1. Overview
 

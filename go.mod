@@ -1,4 +1,4 @@
-module skill-repo-store
+module skillstore
 
 go 1.27.1
 

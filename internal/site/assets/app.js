@@ -66,6 +66,10 @@
 
   // ---- Detail panel ----
 
+  var currentPanelEntry = null;
+  var installScope = "project"; // remembered across panel opens in this session
+  var installDest = { project: "./skills", global: "~/.claude/skills" };
+
   function formatMetadataValue(v) {
     if (Array.isArray(v)) return v.join(", ");
     if (v === null || v === undefined) return "";
@@ -73,6 +77,8 @@
   }
 
   function populatePanel(entry) {
+    currentPanelEntry = entry;
+
     document.getElementById("panel-name").textContent = entry.name;
     document.getElementById("panel-dirname").textContent = entry.dirName;
     document.getElementById("panel-description").textContent =
@@ -98,12 +104,31 @@
     var download = document.getElementById("panel-download");
     download.href = entry.zipPath;
 
+    updateInstallCommand();
+  }
+
+  function updateInstallCommand() {
     var pre = document.getElementById("install-cmd");
+    if (!pre || !currentPanelEntry) return;
     pre.textContent =
-      "npx skill-repo-store-install " +
+      "npx skillstore-install " +
       window.location.origin +
-      entry.zipPath +
-      " --dest ./skills";
+      currentPanelEntry.zipPath +
+      " --dest " +
+      installDest[installScope];
+  }
+
+  function initScopeToggle() {
+    var buttons = document.querySelectorAll(".scope-option");
+    buttons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        installScope = button.getAttribute("data-scope");
+        buttons.forEach(function (b) {
+          b.classList.toggle("is-active", b === button);
+        });
+        updateInstallCommand();
+      });
+    });
   }
 
   function showPanelUI(entry, trigger) {
@@ -245,6 +270,7 @@
     window.addEventListener("popstate", syncPanelToHash);
 
     initInstallCopyButton();
+    initScopeToggle();
     syncPanelToHash();
   }
 

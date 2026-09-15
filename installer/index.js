@@ -91,7 +91,7 @@ async function runCli(argv) {
   const { url, dest } = parseArgs(argv);
 
   if (!url) {
-    console.error('Usage: skill-repo-store-install <zip-url> [--dest ./skills]');
+    console.error('Usage: skillstore-install <zip-url> [--dest ./skills]');
     process.exitCode = 1;
     return;
   }
@@ -104,7 +104,7 @@ async function runCli(argv) {
       console.log(`  ${extractedPath}`);
     }
   } catch (err) {
-    console.error(`skill-repo-store-install: ${err.message}`);
+    console.error(`skillstore-install: ${err.message}`);
     process.exitCode = 1;
   }
 }

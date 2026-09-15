@@ -1,4 +1,4 @@
-// Package cmd implements the skill-repo-store CLI.
+// Package cmd implements the skillstore CLI.
 package cmd
 
 import (
@@ -10,8 +10,8 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 
-	"skill-repo-store/internal/site"
-	"skill-repo-store/internal/skill"
+	"skillstore/internal/site"
+	"skillstore/internal/skill"
 )
 
 var (
@@ -25,9 +25,9 @@ func newLogger() zerolog.Logger {
 }
 
 var rootCmd = &cobra.Command{
-	Use:   "skill-repo-store",
+	Use:   "skillstore",
 	Short: "Generate a static skill marketplace site from a directory of Claude Code skills",
-	Long: "skill-repo-store scans a directory of Claude Code skills, each with a SKILL.md\n" +
+	Long: "skillstore scans a directory of Claude Code skills, each with a SKILL.md\n" +
 		"file, and generates a static, searchable marketplace site: a card grid, a\n" +
 		"detail page per skill, zip downloads, and npx install commands.",
 	RunE: runGenerate,

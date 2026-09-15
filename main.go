@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"skill-repo-store/cmd"
+	"skillstore/cmd"
 )
 
 func main() {

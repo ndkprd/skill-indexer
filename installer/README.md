@@ -1,12 +1,12 @@
-# skill-repo-store-install
+# skillstore-install
 
 A tiny CLI, meant to be run via `npx`, that downloads a skill zip produced by
-`skill-repo-store` and extracts it into a local skills directory.
+`skillstore` and extracts it into a local skills directory.
 
 ## Usage
 
 ```bash
-npx skill-repo-store-install <zip-url> [--dest <dir>]
+npx skillstore-install <zip-url> [--dest <dir>]
 ```
 
 - `<zip-url>` — the URL of a skill zip, e.g.

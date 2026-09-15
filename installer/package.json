@@ -1,9 +1,9 @@
 {
-  "name": "skill-repo-store-install",
+  "name": "skillstore-install",
   "version": "0.1.0",
-  "description": "Fetches a skill zip from skill-repo-store and extracts it into a local skills directory.",
+  "description": "Fetches a skill zip from skillstore and extracts it into a local skills directory.",
   "bin": {
-    "skill-repo-store-install": "./index.js"
+    "skillstore-install": "./index.js"
   },
   "main": "index.js",
   "type": "commonjs",

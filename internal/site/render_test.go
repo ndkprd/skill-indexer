@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"skill-repo-store/internal/skill"
+	"skillstore/internal/skill"
 )
 
 func fixtureSkills() []*skill.Skill {

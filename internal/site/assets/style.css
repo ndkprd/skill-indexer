@@ -175,16 +175,17 @@ img {
   position: sticky;
   top: 0;
   z-index: 10;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: var(--space-6);
-  flex-wrap: wrap;
   padding: var(--space-4) var(--space-6);
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
 }
 
 .wordmark {
+  justify-self: start;
   font-family: var(--font-mono);
   font-size: var(--text-base);
   font-weight: 500;
@@ -194,8 +195,12 @@ img {
 }
 
 .search-shell {
-  flex: 1 1 320px;
-  max-width: 560px;
+  justify-self: center;
+  width: min(560px, 90vw);
+}
+
+.theme-toggle {
+  justify-self: end;
 }
 
 .search-input {
@@ -274,6 +279,25 @@ img {
   padding: var(--space-8) var(--space-6) var(--space-12);
   color: var(--color-text-tertiary);
   font-size: var(--text-xs);
+}
+
+.trademark {
+  font-family: var(--font-mono);
+}
+
+.trademark a {
+  color: var(--color-text-secondary);
+  transition: color var(--duration-fast) var(--ease-out-quart);
+}
+
+.trademark a:hover {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+.trademark-sep {
+  margin: 0 var(--space-1);
+  color: var(--color-border-strong);
 }
 
 /* Card grid */
@@ -437,12 +461,46 @@ body.panel-open {
   border-color: var(--color-border-strong);
 }
 
+.install-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
 .install-label {
   font-size: var(--text-xs);
   font-weight: 500;
   color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.06em;
+}
+
+.scope-toggle {
+  display: inline-flex;
+  padding: 2px;
+  background: var(--color-surface-sunken);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.scope-option {
+  padding: 2px var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  border-radius: 4px;
+  transition: background var(--duration-fast) var(--ease-out-quart),
+    color var(--duration-fast) var(--ease-out-quart);
+}
+
+.scope-option:hover {
+  color: var(--color-text);
+}
+
+.scope-option.is-active {
+  background: var(--color-accent);
+  color: var(--color-bg);
 }
 
 .install-command-row {
@@ -502,7 +560,7 @@ body.panel-open {
   z-index: 21;
   display: flex;
   flex-direction: column;
-  width: min(440px, 100vw);
+  width: 55vw;
   height: 100vh;
   padding: 0;
   margin: 0;
@@ -585,8 +643,8 @@ body.panel-open {
 }
 
 .panel-actions {
-  padding: var(--space-4) var(--space-6) var(--space-6);
-  border-top: 1px solid var(--color-border);
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
@@ -600,8 +658,13 @@ body.panel-open {
 
 @media (max-width: 767px) {
   .site-header {
+    display: flex;
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .search-shell {
+    width: 100%;
   }
 
   .theme-toggle {

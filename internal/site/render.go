@@ -10,7 +10,7 @@ import (
 	"sort"
 	"strings"
 
-	"skill-repo-store/internal/skill"
+	"skillstore/internal/skill"
 )
 
 //go:embed templates/*.html.tmpl
@@ -26,6 +26,9 @@ var cardBadgePriority = []string{"version", "author", "license", "compatibility"
 // maxCardBadges caps how many metadata badges a card shows at a glance.
 const maxCardBadges = 2
 
+// Version is shown in the generated site's footer trademark line.
+const Version = "0.1.0"
+
 type badge struct {
 	Key   string
 	Value string
@@ -39,8 +42,9 @@ type cardView struct {
 }
 
 type indexPageData struct {
-	Title  string
-	Skills []cardView
+	Title   string
+	Version string
+	Skills  []cardView
 }
 
 // Render writes the single-page static site (card grid plus its vendored
@@ -70,8 +74,9 @@ func renderIndex(tmpl *template.Template, skills []*skill.Skill, outputDir strin
 	sort.Slice(cards, func(i, j int) bool { return cards[i].Name < cards[j].Name })
 
 	data := indexPageData{
-		Title:  "Skill Repo Store",
-		Skills: cards,
+		Title:   "Skillstore",
+		Version: Version,
+		Skills:  cards,
 	}
 
 	outPath := filepath.Join(outputDir, "index.html")

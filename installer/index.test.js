@@ -42,7 +42,7 @@ function startFixtureServer(zipBuffer) {
 }
 
 function makeTempDest() {
-  return fs.mkdtempSync(path.join(os.tmpdir(), 'skill-repo-store-install-test-'));
+  return fs.mkdtempSync(path.join(os.tmpdir(), 'skillstore-install-test-'));
 }
 
 test('installer end-to-end', async (t) => {

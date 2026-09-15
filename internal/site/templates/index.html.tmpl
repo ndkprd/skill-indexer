@@ -21,7 +21,7 @@
 </head>
 <body>
   <header class="site-header">
-    <a class="wordmark" href="/">skill-repo-store</a>
+    <a class="wordmark" href="/">skillstore</a>
     <div class="search-shell">
       <label class="visually-hidden" for="search-input">Search skills</label>
       <input id="search-input" class="search-input" type="search" placeholder="Search skills by name or description…" autocomplete="off">
@@ -55,7 +55,12 @@
   </main>
 
   <footer class="site-footer">
-    <p>Generated statically from a directory of Claude Code skills.</p>
+    <p class="trademark">
+      <a href="https://gitlab.com/endekasoft/skillstore" target="_blank" rel="noopener noreferrer">Skillstore</a>
+      v{{.Version}}
+      <span class="trademark-sep" aria-hidden="true">|</span>
+      by <a href="https://gitlab.com/endekasoft" target="_blank" rel="noopener noreferrer">ndkprd</a>
+    </p>
   </footer>
 
   <div id="panel-backdrop" class="panel-backdrop" hidden></div>
@@ -71,6 +76,22 @@
         </svg>
       </button>
     </div>
+    <div class="panel-actions">
+      <a id="panel-download" class="button button-primary" download>Download .zip</a>
+      <div class="install-block">
+        <div class="install-label-row">
+          <p class="install-label">Install with npx</p>
+          <div class="scope-toggle" role="group" aria-label="Install scope">
+            <button type="button" class="scope-option is-active" data-scope="project">Project</button>
+            <button type="button" class="scope-option" data-scope="global">Global</button>
+          </div>
+        </div>
+        <div class="install-command-row">
+          <pre id="install-cmd" class="install-cmd"></pre>
+          <button id="copy-cmd" class="button button-ghost copy-button" type="button" aria-label="Copy install command">Copy</button>
+        </div>
+      </div>
+    </div>
     <div class="panel-body">
       <p id="panel-description" class="panel-description"></p>
       <section id="panel-metadata-section" class="metadata" hidden aria-label="Skill metadata">
@@ -78,16 +99,6 @@
           <tbody id="panel-metadata-body"></tbody>
         </table>
       </section>
-    </div>
-    <div class="panel-actions">
-      <a id="panel-download" class="button button-primary" download>Download .zip</a>
-      <div class="install-block">
-        <p class="install-label">Install with npx</p>
-        <div class="install-command-row">
-          <pre id="install-cmd" class="install-cmd"></pre>
-          <button id="copy-cmd" class="button button-ghost copy-button" type="button" aria-label="Copy install command">Copy</button>
-        </div>
-      </div>
     </div>
   </aside>
 

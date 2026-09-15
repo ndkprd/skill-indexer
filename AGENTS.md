@@ -4,7 +4,7 @@ Instructions for AI coding agents working in this repository.
 
 ## What this is
 
-`skill-repo-store` is a Go CLI that generates a static "skill marketplace"
+`skillstore` is a Go CLI that generates a static "skill marketplace"
 site from a directory of Claude Code skills. See `README.md` for the user-facing
 overview, `PRODUCT.md` for who it's for and why, and `DESIGN.md` for the
 visual design system. The implementation plan and its resolved FAQ live at
@@ -107,7 +107,7 @@ cd installer && bun install && bun test
 ## Things to not reintroduce
 
 - No `serve` subcommand — explicitly rejected in favor of a single
-  generate-only root command (`skill-repo-store --skill-dir ... --output-dir
+  generate-only root command (`skillstore --skill-dir ... --output-dir
   ...`). Users run their own static file server.
 - No CSS framework, no JS build step for the generated site — it's rendered
   entirely via `html/template` + `go:embed` so the generator stays one
