@@ -18,8 +18,8 @@ static files; no backend is required to host it.
 - **Site visitors** — developers browsing a generated marketplace to find
   and install a skill. See [User Guides](./user-guides/index.md).
 - **Operators** — whoever builds the CLI, runs it against a `skills/`
-  directory, and publishes the result (locally, via Docker, or via CI). See
-  [Operator Guides](./operator-guides/index.md).
+  directory, and publishes the result (locally, via Docker Compose, on
+  Kubernetes, or via CI). See [Operator Guides](./operator-guides/index.md).
 - **Contributors** — anyone changing Skillstore itself. See [Developer
   Guides](./developer-guides/index.md).
 

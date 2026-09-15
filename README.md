@@ -24,9 +24,9 @@ python3 -m http.server -d public 8080
 ```
 
 Point `--skill-dir` at your own skills directory for real use. See
-[examples/](examples/) for a GitLab CI pipeline that publishes the output to
-GitLab Pages, and the root `Dockerfile` for a containerized build of the CLI
-itself.
+[examples/](examples/) for a GitLab CI pipeline that publishes to GitLab
+Pages, a Docker Compose setup, and a Kubernetes Deployment template — plus
+the root `Dockerfile` for a containerized build of the CLI itself.
 
 ## CLI
 
@@ -123,8 +123,9 @@ internal/skill/    SKILL.md frontmatter parsing + directory scanning
 internal/site/     HTML rendering (html/template + go:embed), zip archiving,
                    search index generation
 installer/         standalone npx-installable Node package
-examples/          sample skills (used by tests too), a GitLab CI pipeline
-                   example, and its own quickstart README
+examples/          sample skills (used by tests too), GitLab CI/Docker
+                   Compose/Kubernetes deployment examples, and its own
+                   quickstart README
 Dockerfile         containerized build of the CLI (not the generated site)
 .agents/plans/     implementation plan(s) for this project
 PRODUCT.md         strategic design context (users, purpose, anti-references)

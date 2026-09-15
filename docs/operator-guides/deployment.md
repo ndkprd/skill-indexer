@@ -1,16 +1,16 @@
 ---
 title: Deployment
-description: Running Skillstore in Docker and publishing its output via GitLab Pages.
-tags: [operator-guide, deployment, docker, gitlab-ci]
+description: Running Skillstore via Docker, Docker Compose, Kubernetes, and GitLab Pages.
+tags: [operator-guide, deployment, docker, kubernetes, gitlab-ci]
 ---
 
 # Deployment
 
 Skillstore's output is plain static files (`index.html`, `assets/`,
 `downloads/*.zip`, `search-index.json`). Once generated, host it anywhere
-that serves static files — the two paths documented here (Docker,
-GitLab Pages) cover generation and one common publishing target, but any
-static host works equally well.
+that serves static files — the four paths documented here (Docker, Docker
+Compose, Kubernetes, GitLab Pages) cover generation and a couple of common
+publishing targets, but any static host works equally well.
 
 ```mermaid
 graph TD
@@ -18,14 +18,22 @@ graph TD
         A[skillstore CLI] -->|writes| B["public/"]
         B --> C[Any static file server]
     end
+    subgraph Compose["Docker Compose"]
+        G["generate service (skillstore, one-shot)"] -->|shared volume| H["web service (nginx)"]
+    end
+    subgraph K8s["Kubernetes Deployment"]
+        I["initContainer: fetch-skills (git clone)"] --> J["initContainer: generate-site (skillstore)"]
+        J -->|emptyDir volume| K["container: nginx"]
+    end
     subgraph GitLab_CI["GitLab CI"]
         D[git push] --> E["pages job: go build + run skillstore"]
         E -->|artifact: public/| F[GitLab Pages]
     end
 ```
 
-The CLI only generates files; it does not serve HTTP itself in either path
-— a separate static file server (or GitLab Pages) does the serving.
+The CLI only generates files; it does not serve HTTP itself in any path —
+a separate static file server (nginx, GitLab Pages, or whatever else you
+choose) always does the serving.
 
 ## Docker
 
@@ -49,6 +57,50 @@ server.
 **Resource footprint**: the compiled binary is a few megabytes with no
 runtime dependencies; generating dozens of skills takes well under a
 second and needs no more than default container CPU/memory limits.
+
+## Docker Compose
+
+```bash
+docker compose -f examples/docker-compose.yaml up --build
+```
+
+`examples/docker-compose.yaml` defines two services: `generate` builds the
+CLI from the repository `Dockerfile` and runs it once against
+`examples/skills/` into a shared named volume, then exits; `web` (nginx)
+waits for `generate` to finish successfully
+(`depends_on.generate.condition: service_completed_successfully`) and
+serves that volume at `http://localhost:8080`.
+
+The distroless image runs as a non-root user by default; the `generate`
+service overrides that to root (`user: "0:0"`) purely because the shared
+volume is empty and unwritable by a non-root UID on first mount — it's a
+one-shot job that exits immediately, not a standing service, so this
+doesn't carry the same risk it would for `web`.
+
+To use your own skills, copy the compose file (and the `Dockerfile`) into
+your project and point `generate`'s `./skills` volume elsewhere.
+
+## Kubernetes
+
+`examples/kubernetes.yaml` is a Deployment template — it needs your own
+image reference and skills repository URL filled in before it's
+applicable, not something to `kubectl apply -f` unmodified. Structure:
+
+1. **`fetch-skills` init container** (`alpine/git`) clones your skills
+   repository into a per-pod `emptyDir` volume.
+2. **`generate-site` init container** (your built Skillstore image) reads
+   that volume and writes the generated site into a second `emptyDir`
+   volume. Like the Compose example, it runs as root
+   (`securityContext.runAsUser: 0`) only to write into that freshly-empty
+   volume.
+3. **`nginx` container** mounts the second volume read-only and serves it,
+   with a readiness probe and resource requests/limits set.
+
+A `Service` in the same file exposes the Deployment on port 80. See the
+file's own comments for the two substitutions required
+(`registry.gitlab.com/endekastore/skillstore:latest` and the real skills repo URL) and a
+note on the tradeoff of per-replica clone+generate versus a shared
+PersistentVolume for larger skill sets.
 
 ## GitLab Pages via CI
 

@@ -1,0 +1,103 @@
+# Example Kubernetes Deployment for Skillstore: two init containers
+# (clone skills, then generate the site) followed by nginx serving the
+# result, all sharing per-pod emptyDir volumes.
+#
+# This is a template, not something you can `kubectl apply -f` unmodified:
+#
+#   1. Build and push your own Skillstore image (see ../Dockerfile) and
+#      replace `registry.gitlab.com/endekastore/skillstore:latest` below
+#      with wherever you actually pushed it — that value is this project's
+#      own registry path, not a published, pullable image; substitute your
+#      own if you're not endekastore.
+#   2. Replace `https://git.example.com/skills.git` with your real skills
+#      repository. A private repo needs a mounted credentials Secret for
+#      the `fetch-skills` init container — not shown here, see your git
+#      host's docs for the HTTPS token or SSH key pattern.
+#
+# Note: with replicas > 1, every pod clones and generates independently on
+# startup (init containers run per-pod against per-pod emptyDir volumes) —
+# fine for a small skills set, but for a large one or frequent restarts,
+# consider a Job that generates once into a shared PersistentVolume
+# instead, with this Deployment mounting it read-only.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skillstore
+  labels:
+    app: skillstore
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: skillstore
+  template:
+    metadata:
+      labels:
+        app: skillstore
+    spec:
+      initContainers:
+        - name: fetch-skills
+          image: alpine/git:latest
+          args:
+            - clone
+            - --depth=1
+            - https://git.example.com/skills.git
+            - /skills
+          volumeMounts:
+            - name: skills-src
+              mountPath: /skills
+
+        - name: generate-site
+          image: registry.gitlab.com/endekastore/skillstore:latest
+          args: ["--skill-dir", "/skills", "--output-dir", "/site"]
+          # See the docker-compose.yaml comment: root is needed only to
+          # write into the freshly-mounted, empty `site` volume.
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: skills-src
+              mountPath: /skills
+              readOnly: true
+            - name: site
+              mountPath: /site
+
+      containers:
+        - name: nginx
+          image: nginx:1.27-alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: site
+              mountPath: /usr/share/nginx/html
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 2
+          resources:
+            requests:
+              cpu: 50m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+
+      volumes:
+        - name: skills-src
+          emptyDir: {}
+        - name: site
+          emptyDir: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: skillstore
+spec:
+  selector:
+    app: skillstore
+  ports:
+    - port: 80
+      targetPort: 80

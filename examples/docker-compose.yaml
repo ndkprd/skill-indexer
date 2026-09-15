@@ -1,0 +1,42 @@
+# Example Docker Compose setup for Skillstore: a one-shot `generate`
+# service builds the site into a shared volume, then `web` (nginx) serves
+# it. `generate` exits after one run; `web` keeps running.
+#
+# Run from the repository root:
+#   docker compose -f examples/docker-compose.yaml up --build
+#
+# Then open http://localhost:8080. This demo uses the bundled
+# examples/skills/ fixtures — for real use, either copy this file (and the
+# Dockerfile) into your own project and point the `generate` service's
+# `./skills` volume at your own skills directory, or adjust the `build:`
+# section to build from wherever you keep Skillstore's source.
+
+services:
+  generate:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    # The image runs as a non-root user by default (distroless "nonroot").
+    # Root is needed only so this one-shot job can create files in the
+    # freshly-mounted, empty `site` volume — it exits immediately after
+    # generating, so this isn't a standing security concern the way it
+    # would be for a long-running service.
+    user: "0:0"
+    volumes:
+      - ./skills:/skills:ro
+      - site:/public
+    command: ["--skill-dir", "/skills", "--output-dir", "/public"]
+
+  web:
+    image: nginx:1.27-alpine
+    depends_on:
+      generate:
+        condition: service_completed_successfully
+    volumes:
+      - site:/usr/share/nginx/html:ro
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+volumes:
+  site:

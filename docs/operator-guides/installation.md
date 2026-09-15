@@ -8,11 +8,13 @@ tags: [operator-guide, installation]
 
 ## System requirements
 
-| Requirement | Version            | Needed for                                                                                                   |
-| ----------- | ------------------ | ------------------------------------------------------------------------------------------------------------ |
-| Go          | 1.27+              | Building the CLI from source                                                                                 |
-| Docker      | any recent version | Building/running the container image instead                                                                 |
-| Node.js     | 18+                | Only for end users running the generated `npx` install command — not required to build or run the CLI itself |
+| Requirement         | Version               | Needed for                                                                                                   |
+| ------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Go                  | 1.27+                 | Building the CLI from source                                                                                 |
+| Docker              | any recent version    | Building/running the container image instead                                                                 |
+| Docker Compose      | v2 (`docker compose`) | Only for the `examples/docker-compose.yaml` demo                                                             |
+| kubectl + a cluster | any recent version    | Only for deploying `examples/kubernetes.yaml`                                                                |
+| Node.js             | 18+                   | Only for end users running the generated `npx` install command — not required to build or run the CLI itself |
 
 Skillstore itself has no runtime dependencies beyond the compiled binary:
 no database, no external services, no environment-specific configuration.
@@ -62,4 +64,4 @@ and confirm `/tmp/skillstore-check/index.html` and
 ## Related
 
 - [Configuration](./configuration.md) — the flags and the `SKILL.md` format they operate on
-- [Deployment](./deployment.md) — running this in Docker or CI
+- [Deployment](./deployment.md) — running this in Docker, Compose, Kubernetes, or CI

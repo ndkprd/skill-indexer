@@ -15,7 +15,7 @@ via CI.
 
 - [Installation](./installation.md) — building the CLI from source or via Docker
 - [Configuration](./configuration.md) — the CLI's two flags, and what a valid `SKILL.md` needs
-- [Deployment](./deployment.md) — Docker and GitLab Pages
+- [Deployment](./deployment.md) — Docker, Docker Compose, Kubernetes, and GitLab Pages
 - [Troubleshooting](./troubleshooting.md) — diagnosing skipped skills, empty output, and broken pipelines
 
 **Recommended reading order for first-time setup:** Installation →
