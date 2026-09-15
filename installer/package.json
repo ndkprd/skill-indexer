@@ -1,0 +1,20 @@
+{
+  "name": "skill-repo-store-install",
+  "version": "0.1.0",
+  "description": "Fetches a skill zip from skill-repo-store and extracts it into a local skills directory.",
+  "bin": {
+    "skill-repo-store-install": "./index.js"
+  },
+  "main": "index.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test index.test.js"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.16"
+  },
+  "license": "MIT"
+}
