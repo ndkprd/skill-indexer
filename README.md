@@ -11,17 +11,22 @@ host the output; only the `npx` install step touches the network.
 
 ```bash
 go build -o skillstore .
-./skillstore --skill-dir skills --output-dir public
+./skillstore --skill-dir examples/skills --output-dir public
 ```
 
-This scans `skills/` (46 real skills ship in this repo as sample/fixture
-data), skipping and warning on any directory missing a valid `SKILL.md`, and
-writes the generated site to `public/`. Serve it with any static file
-server, e.g.:
+This scans `examples/skills/` (33 real skills ship in this repo as
+sample/fixture data — see [examples/README.md](examples/README.md)),
+skipping and warning on any directory missing a valid `SKILL.md`, and writes
+the generated site to `public/`. Serve it with any static file server, e.g.:
 
 ```bash
 python3 -m http.server -d public 8080
 ```
+
+Point `--skill-dir` at your own skills directory for real use. See
+[examples/](examples/) for a GitLab CI pipeline that publishes the output to
+GitLab Pages, and the root `Dockerfile` for a containerized build of the CLI
+itself.
 
 ## CLI
 
@@ -78,6 +83,10 @@ Every skill's detail panel shows a command like:
 npx skillstore-install https://your-site.example/downloads/vue.zip --dest ./skills
 ```
 
+A Project/Global toggle next to the command switches `--dest` between
+`./skills` and `~/.claude/skills` (shell tilde expansion handles the rest —
+no code on the installer's side needs to know the difference).
+
 The `installer/` directory is that standalone npm package
 (`skillstore-install`). It fetches a zip by URL and extracts it into
 `--dest` (default `./skills`). See [installer/README.md](installer/README.md)
@@ -108,7 +117,9 @@ internal/skill/    SKILL.md frontmatter parsing + directory scanning
 internal/site/     HTML rendering (html/template + go:embed), zip archiving,
                    search index generation
 installer/         standalone npx-installable Node package
-skills/            sample/fixture skills used for manual runs and tests
+examples/          sample skills (used by tests too), a GitLab CI pipeline
+                   example, and its own quickstart README
+Dockerfile         containerized build of the CLI (not the generated site)
 .agents/plans/     implementation plan(s) for this project
 PRODUCT.md         strategic design context (users, purpose, anti-references)
 DESIGN.md          visual design system (colors, typography, components)

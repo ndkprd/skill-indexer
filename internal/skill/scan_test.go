@@ -8,21 +8,36 @@ import (
 
 func TestScanDir(t *testing.T) {
 	t.Run("real fixture directory", func(t *testing.T) {
-		skills, warnings := ScanDir("../../skills")
+		skills, warnings := ScanDir("../../examples/skills")
 
 		if len(warnings) != 0 {
 			t.Errorf("warnings = %v, want none", warnings)
 		}
-		if got, want := len(skills), 46; got != want {
-			t.Errorf("len(skills) = %d, want %d", got, want)
+
+		// Compare against the actual subdirectory count rather than a
+		// hardcoded number, so this test doesn't go stale whenever
+		// examples/skills gains or loses a fixture.
+		entries, err := os.ReadDir("../../examples/skills")
+		if err != nil {
+			t.Fatalf("ReadDir: %v", err)
+		}
+		wantCount := 0
+		for _, e := range entries {
+			if e.IsDir() {
+				wantCount++
+			}
+		}
+
+		if got := len(skills); got != wantCount {
+			t.Errorf("len(skills) = %d, want %d (one per subdirectory of examples/skills)", got, wantCount)
 		}
 	})
 
 	t.Run("skips a broken skill directory with one warning", func(t *testing.T) {
 		root := t.TempDir()
 
-		copyDir(t, "../../skills/vue", filepath.Join(root, "vue"))
-		copyDir(t, "../../skills/gitlab-cli", filepath.Join(root, "gitlab-cli"))
+		copyDir(t, "../../examples/skills/vue", filepath.Join(root, "vue"))
+		copyDir(t, "../../examples/skills/gitlab-cli", filepath.Join(root, "gitlab-cli"))
 
 		// Broken: no SKILL.md at all.
 		if err := os.MkdirAll(filepath.Join(root, "no-skill-md"), 0o755); err != nil {

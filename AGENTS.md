@@ -23,8 +23,18 @@ go test ./...
 Run the generator against the real fixtures to sanity-check end to end:
 
 ```bash
-go run . --skill-dir skills --output-dir public
+go run . --skill-dir examples/skills --output-dir public
 ```
+
+Sample skills live at `examples/skills/` (not `skills/` at the repo root —
+they were moved there to sit alongside the `examples/.gitlab-ci.yml` and
+`examples/README.md` quickstarts). All test fixture paths in
+`internal/skill/*_test.go` and `internal/site/zip_test.go` point at
+`../../examples/skills/...` accordingly. `examples/skills/` intentionally
+excludes the ASDP-internal skills that were in the original 46-skill set
+(33 remain) — `internal/skill/scan_test.go`'s count assertion reads the
+directory itself rather than hardcoding a number, specifically so it
+doesn't go stale again if that set changes further.
 
 The `installer/` directory is a separate Node.js package with its own
 lifecycle (this shell has `bun` but not `node`/`npm`/`npx` — use `bun`
@@ -113,5 +123,9 @@ cd installer && bun install && bun test
   entirely via `html/template` + `go:embed` so the generator stays one
   self-contained Go binary.
 - Don't add a `--base-path`-style prefix without checking — the generated
-  site currently uses root-relative URLs (`/skills/...`, `/downloads/...`,
-  `/assets/...`) and assumes it's hosted at the domain root.
+  site currently uses root-relative URLs (`/downloads/...`, `/assets/...`,
+  `#<skill-name>` hashes) and assumes it's hosted at the domain root.
+- The `Dockerfile` builds and ships only the CLI binary (distroless,
+  non-root) — it never bakes in a `skills/` directory or the generated
+  site. Don't add either without a real reason; users mount their own
+  skills dir and output dir as volumes.

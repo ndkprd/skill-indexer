@@ -8,7 +8,7 @@ import (
 
 func TestParseFrontmatter(t *testing.T) {
 	t.Run("nested metadata map", func(t *testing.T) {
-		s, err := ParseFrontmatter("../../skills/vue/SKILL.md")
+		s, err := ParseFrontmatter("../../examples/skills/vue/SKILL.md")
 		if err != nil {
 			t.Fatalf("ParseFrontmatter returned error: %v", err)
 		}
@@ -33,7 +33,7 @@ func TestParseFrontmatter(t *testing.T) {
 	})
 
 	t.Run("top-level license and compatibility with 4-space metadata indent", func(t *testing.T) {
-		s, err := ParseFrontmatter("../../skills/vueuse-functions/SKILL.md")
+		s, err := ParseFrontmatter("../../examples/skills/vueuse-functions/SKILL.md")
 		if err != nil {
 			t.Fatalf("ParseFrontmatter returned error: %v", err)
 		}
@@ -55,12 +55,12 @@ func TestParseFrontmatter(t *testing.T) {
 	})
 
 	t.Run("minimal frontmatter with only name and description", func(t *testing.T) {
-		s, err := ParseFrontmatter("../../skills/asdp-create-plan/SKILL.md")
+		s, err := ParseFrontmatter("../../examples/skills/bun/SKILL.md")
 		if err != nil {
 			t.Fatalf("ParseFrontmatter returned error: %v", err)
 		}
-		if s.Name != "asdp-create-plan" {
-			t.Errorf("Name = %q, want %q", s.Name, "asdp-create-plan")
+		if s.Name != "bun" {
+			t.Errorf("Name = %q, want %q", s.Name, "bun")
 		}
 		if s.Description == "" {
 			t.Error("Description is empty, want non-empty")
@@ -71,7 +71,7 @@ func TestParseFrontmatter(t *testing.T) {
 	})
 
 	t.Run("top-level dependencies list folded into metadata", func(t *testing.T) {
-		s, err := ParseFrontmatter("../../skills/gitlab-cli/SKILL.md")
+		s, err := ParseFrontmatter("../../examples/skills/gitlab-cli/SKILL.md")
 		if err != nil {
 			t.Fatalf("ParseFrontmatter returned error: %v", err)
 		}
@@ -88,7 +88,7 @@ func TestParseFrontmatter(t *testing.T) {
 	})
 
 	t.Run("top-level allowed-tools string folded into metadata", func(t *testing.T) {
-		s, err := ParseFrontmatter("../../skills/playwright-cli/SKILL.md")
+		s, err := ParseFrontmatter("../../examples/skills/playwright-cli/SKILL.md")
 		if err != nil {
 			t.Fatalf("ParseFrontmatter returned error: %v", err)
 		}

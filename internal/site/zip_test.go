@@ -12,7 +12,7 @@ import (
 func TestZipSkillDir(t *testing.T) {
 	s := &skill.Skill{
 		DirName: "vue",
-		DirPath: "../../skills/vue",
+		DirPath: "../../examples/skills/vue",
 	}
 
 	destZipPath := filepath.Join(t.TempDir(), "vue.zip")

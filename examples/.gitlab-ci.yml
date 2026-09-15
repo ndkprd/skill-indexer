@@ -1,0 +1,28 @@
+# Example GitLab CI pipeline for Skillstore.
+#
+# Copy this file to the root of your repository as `.gitlab-ci.yml` (adjust
+# `--skill-dir` below if your skills live somewhere other than `skills/`).
+# On every push to the default branch, it builds the CLI, generates the
+# site, and publishes it to GitLab Pages at:
+#
+#   https://<your-namespace>.gitlab.io/<your-project>/
+#
+# See https://docs.gitlab.com/ee/user/project/pages/ for GitLab Pages
+# fundamentals — the only hard requirements are a job literally named
+# `pages` and a `public/` artifact directory, both satisfied below.
+
+image: golang:1.27
+
+stages:
+  - deploy
+
+pages:
+  stage: deploy
+  script:
+    - go build -o skillstore .
+    - ./skillstore --skill-dir skills --output-dir public
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
