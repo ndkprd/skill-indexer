@@ -7,8 +7,8 @@ sidebar_position: 4
 
 # Developer Guides
 
-These guides are for anyone changing Skillstore's own code (the Go CLI,
-its templates/assets, or the `installer/` Node package).
+These guides are for anyone changing Skillstore's own code (the Go CLI and
+its templates/assets).
 
 ## In This Section
 

@@ -24,11 +24,12 @@ server-side route per skill.
 
 `ZipSkillDir` writes every entry as `<DirName>/<relative path>` (e.g.
 `vue/SKILL.md`), not bare `SKILL.md` at the archive root. This matters
-because the `npx` install command extracts straight into `--dest` with no
-extra wrapping folder — if zip entries were flat, `--dest ./skills` would
-dump files directly into `./skills/` instead of `./skills/vue/`,
-colliding with every other installed skill. `zip_test.go` explicitly
-asserts against the flat form to catch a regression here.
+because the `npx skills add <zip-url>` install command (see below) expects
+a zip's own contents to already carry the right top-level folder name — if
+zip entries were flat, extraction would dump files directly into the
+install target instead of a `vue/` subfolder within it, colliding with
+every other installed skill. `zip_test.go` explicitly asserts against the
+flat form to catch a regression here.
 
 ## Frontmatter metadata has no schema, and that's intentional
 
@@ -88,6 +89,31 @@ file.
 This is intentional (no stale files from skills removed since a previous
 run) but has no confirmation prompt and no dry-run flag. Never point
 `--output-dir` at something you didn't mean to delete.
+
+## The `npx` install command depends on a third-party CLI this project doesn't own
+
+`app.js`'s `updateInstallCommand` generates
+`npx skills add <zip-url> -a claude-code -y[-g]`, wrapping
+[`vercel-labs/skills`](https://github.com/vercel-labs/skills). This
+project builds and ships nothing to make that command work — it relies on
+`skills` continuing to support installing directly from a zip download URL
+and continuing to accept `-a`/`-y`/`-g` the way it does today. If that
+package's behavior changes incompatibly, the fix is in `app.js`'s command
+string, not in any Go code. A previous version of this project shipped its
+own `installer/skillstore-install` npm package doing the same job by hand
+(fetch a URL, extract a zip) — it was deleted in favor of `skills` once
+zip-URL support was confirmed, since maintaining and publishing a package
+of our own added nothing `skills` didn't already do. Don't reintroduce a
+bundled installer without a concrete reason `skills` stopped working.
+
+Two behavior differences from the deleted installer, worth knowing:
+
+- `skills` requires **Node.js 22.20+**, not the 18+ our own installer
+  targeted.
+- `skills`' project-scope default is `./.claude/skills/<name>/` (agent-
+  namespaced), not the bare `./skills/<name>/` this project's own
+  `--skill-dir` default uses. Its global scope (`~/.claude/skills/`)
+  happens to already match ours exactly.
 
 ## The install command's URL is computed in the browser, not baked in
 

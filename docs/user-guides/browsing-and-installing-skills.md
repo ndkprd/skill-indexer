@@ -37,22 +37,20 @@ Each panel offers two ways to get a skill:
 
 - **`npx` install** (top of the panel): copy the pre-filled command with
   the **Copy** button and run it in your terminal. It downloads the
-  skill and extracts it for you.
+  skill and extracts it for you, using
+  [`skills`](https://github.com/vercel-labs/skills), an existing
+  third-party package manager for Claude Code and other coding agents'
+  skills — requires Node.js 22.20+.
 - **Download .zip**: downloads the skill's folder as a zip archive to
-  extract yourself.
-
-> **Nota:** the `npx` command only works once whoever runs this site has
-> published the installer package to npm — it's not guaranteed to work on
-> every Skillstore site. If it fails with a "package not found" error,
-> use **Download .zip** instead.
+  extract yourself. Works regardless of what's installed on your machine.
 
 ### Choosing where it installs
 
 The `npx` command has a **Project** / **Global** toggle above it:
 
-- **Project** (default) installs into `./skills` in your current
+- **Project** (default) installs into `./.claude/skills/` in your current
   directory.
-- **Global** installs into `~/.claude/skills`, available to every project
+- **Global** installs into `~/.claude/skills/`, available to every project
   on your machine.
 
 Your choice is remembered while you keep browsing, so you don't have to
@@ -74,9 +72,9 @@ automatically.
 - **Clicking a card does nothing**: this points to the same cause as
   above — the page failed to load its skill data. Check for the banner
   described above.
-- **The `npx` command doesn't work**: make sure you have Node.js 18+
-  installed (`npx` ships with it); also see the note above about the
-  installer package needing to be published first.
+- **The `npx` command doesn't work**: make sure you have Node.js 22.20+
+  installed (`npx` ships with it) — this is a real requirement of the
+  `skills` package the command uses, not something specific to this site.
 - **Clicking Copy does nothing** (no "Copied" confirmation): your browser
   is blocking clipboard access, typically because the site isn't served
   over HTTPS (or `localhost`). Select the command text in the box and

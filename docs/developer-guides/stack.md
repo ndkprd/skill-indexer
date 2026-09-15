@@ -28,13 +28,20 @@ files and writing files.
 | JS        | Plain vanilla JS (`app.js`), no framework, no build step                                                           | The generated site is meant to be a handful of static files; a framework/bundler would add a build step the Go binary doesn't otherwise need.     |
 | CSS       | Plain CSS custom properties, no framework                                                                          | See [DESIGN.md](../../DESIGN.md) for the full token system (light + Nord dark themes).                                                            |
 
-## Installer (Node)
+## Install command (external dependency, not shipped by this project)
 
-| Component      | Choice                                             | Why                                                                                                                                       |
-| -------------- | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| Runtime        | Node.js 18+ (via `npx`)                            | The install command is meant to be copy-pasted by developers who already have Node for other tooling.                                     |
-| Zip extraction | [`adm-zip`](https://www.npmjs.com/package/adm-zip) | Pure JS, no native bindings — keeps `npx` invocation fast with no compile step.                                                           |
-| Test runner    | Node's built-in `node:test`                        | No extra dependency just for tests; run via `bun test` in this repo's dev shell (Node-compatible), but the shipped code stays plain-Node. |
+Every generated site's `npx` install command shells out to
+[`skills`](https://github.com/vercel-labs/skills) (`npx skills add`) — an
+already-published, actively maintained third-party CLI for the open agent
+skills ecosystem, not anything this project builds or ships. It supports
+installing directly from a zip download URL, which is exactly what
+`/downloads/<name>.zip` is, so no custom installer package is needed.
+Requires Node.js 22.20+ on whoever runs the install command.
+
+This project used to ship its own `installer/skillstore-install` npm
+package doing the same job. It was deleted once `skills` was confirmed to
+support zip-URL installs — maintaining and publishing our own package
+added nothing `skills` didn't already do. See [Pitfalls](./pitfalls.md).
 
 ## Related
 

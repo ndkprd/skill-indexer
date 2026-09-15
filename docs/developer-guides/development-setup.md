@@ -9,9 +9,10 @@ tags: [developer-guide, setup]
 ## Prerequisites
 
 - Go 1.27+
-- Node.js 18+ or [Bun](https://bun.sh/) for the `installer/` package (this
-  repo's own dev environment uses Bun as a Node-compatible runtime — see
-  the note below)
+
+Node.js is only needed by end users running the generated site's `npx`
+install command (see [Stack](./stack.md)) — not for building, testing, or
+running the CLI itself.
 
 ## Clone and build
 
@@ -38,21 +39,6 @@ go vet ./...
 gofmt -l .          # must print nothing
 go test ./...
 ```
-
-## Working on the installer package
-
-`installer/` is a separate Node.js project with its own lifecycle:
-
-```bash
-cd installer
-bun install && bun test   # or: npm install && npm test
-```
-
-> **Note:** this repo's shell has `bun` but not `node`/`npm`/`npx`
-> installed directly. Bun is Node-compatible enough to develop and test
-> against, but `installer/index.js` itself must stay plain-Node-compatible
-> (CommonJS, global `fetch`, no bun-only APIs) since end users invoke it
-> via real `npx`.
 
 ## Iterating on the generated site's HTML/CSS/JS
 

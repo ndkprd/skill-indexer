@@ -68,7 +68,7 @@
 
   var currentPanelEntry = null;
   var installScope = "project"; // remembered across panel opens in this session
-  var installDest = { project: "./skills", global: "~/.claude/skills" };
+  var installScopeFlags = { project: "", global: " -g" };
 
   function formatMetadataValue(v) {
     if (Array.isArray(v)) return v.join(", ");
@@ -111,11 +111,11 @@
     var pre = document.getElementById("install-cmd");
     if (!pre || !currentPanelEntry) return;
     pre.textContent =
-      "npx skillstore-install " +
+      "npx skills add " +
       window.location.origin +
       currentPanelEntry.zipPath +
-      " --dest " +
-      installDest[installScope];
+      " -a claude-code -y" +
+      installScopeFlags[installScope];
   }
 
   function initScopeToggle() {

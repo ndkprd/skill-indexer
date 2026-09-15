@@ -9,7 +9,7 @@ site from a directory of Claude Code skills. See `README.md` for the user-facing
 overview, `PRODUCT.md` for who it's for and why, and `DESIGN.md` for the
 visual design system. The implementation plan and its resolved FAQ live at
 `.agents/plans/001-skill-marketplace-generator.md` — read it before making
-structural changes; it records *why* several non-obvious decisions were made.
+structural changes; it records _why_ several non-obvious decisions were made.
 
 ## Build, test, lint
 
@@ -35,15 +35,6 @@ excludes the ASDP-internal skills that were in the original 46-skill set
 (33 remain) — `internal/skill/scan_test.go`'s count assertion reads the
 directory itself rather than hardcoding a number, specifically so it
 doesn't go stale again if that set changes further.
-
-The `installer/` directory is a separate Node.js package with its own
-lifecycle (this shell has `bun` but not `node`/`npm`/`npx` — use `bun`
-locally; the shipped `installer/index.js` itself must stay plain
-Node-compatible, no bun-only APIs):
-
-```bash
-cd installer && bun install && bun test
-```
 
 ## Conventions
 
@@ -72,7 +63,9 @@ cd installer && bun install && bun test
     the panel never needs a second fetch or a server route per skill.
   - Zip entries are prefixed with the skill's `DirName` (e.g.
     `vue/SKILL.md`) so extraction reproduces the `--skill-dir` layout — see
-    the plan's FAQ for why this matters to the installer.
+    the plan's FAQ for why this matters, and note that the third-party
+    `skills` CLI (see below) also relies on this when installing directly
+    from a zip download URL.
   - Card badges use a fixed priority order (`version` → `author` →
     `license` → `compatibility` → first remaining key alphabetically),
     capped at 2. The panel's metadata table shows every key, sorted
@@ -83,6 +76,18 @@ cd installer && bun install && bun test
     rendered anywhere in the UI — the frontmatter `description` is
     considered sufficient. Don't re-add a markdown-to-HTML render step
     without confirming that's actually wanted again.
+  - The install command (`app.js`'s `updateInstallCommand`) shells out to
+    `npx skills add <zip-url> -a claude-code -y[-g]` — the third-party
+    [`vercel-labs/skills`](https://github.com/vercel-labs/skills) CLI, not
+    a package this project ships. There used to be a custom
+    `installer/skillstore-install` Node package doing the same job; it was
+    deleted once `skills` was confirmed to support installing directly
+    from a zip download URL, since that meant no unpublished package of
+    our own was needed. `skills` requires Node.js 22.20+, and its
+    project-scope default is `./.claude/skills/<name>/`, not the bare
+    `./skills/<name>/` this project's own `--skill-dir` default uses.
+    Don't reintroduce a bundled installer package without a real reason to
+    stop depending on `skills`.
 - **Assets are vendored, not CDN-loaded** (except the two Google Fonts
   requests for IBM Plex Sans/Mono, which degrade to the system-font fallback
   stack if unreachable). `internal/site/assets/fuse.min.js` is a vendored
@@ -118,7 +123,7 @@ cd installer && bun install && bun test
 
 - No `serve` subcommand — explicitly rejected in favor of a single
   generate-only root command (`skillstore --skill-dir ... --output-dir
-  ...`). Users run their own static file server.
+...`). Users run their own static file server.
 - No CSS framework, no JS build step for the generated site — it's rendered
   entirely via `html/template` + `go:embed` so the generator stays one
   self-contained Go binary.

@@ -130,22 +130,17 @@ shows the exact URL under **Deploy → Pages** once the job succeeds.
 See [examples/README.md](../../examples/README.md) for the same
 instructions alongside a direct-generate quickstart.
 
-## npx install requires a published package
+## The npx install command depends on a third-party package
 
-Every generated site shows an `npx skillstore-install <zip-url> ...`
-command as one of two ways to get a skill. As of this writing, the
-`skillstore-install` package (`installer/`) **has not been published to
-the npm registry** — `npx` cannot resolve it, and the command will fail
-with a "package not found" error for anyone who tries it. This was
-explicitly scoped out of the original implementation plan as a follow-up,
-not an oversight.
-
-Before relying on the `npx` flow for real visitors, either:
-
-- Publish `installer/` to the npm registry yourself (`npm publish` from
-  that directory, after reviewing `installer/package.json`), or
-- Treat the **Download .zip** button as the only working install path
-  until you do.
+Every generated site shows an `npx skills add <zip-url> ...` command as
+one of two ways to get a skill. `skills` is
+[`vercel-labs/skills`](https://github.com/vercel-labs/skills) — an
+already-published, actively maintained third-party CLI, not anything this
+project ships. Nothing needs to be published or configured by you for this
+to work, unlike an earlier version of this project that shipped its own
+unpublished `installer/skillstore-install` package. The only real
+precondition is the visitor's own environment: `skills` requires Node.js
+22.20+.
 
 ## Site branding
 

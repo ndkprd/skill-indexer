@@ -33,15 +33,18 @@ graph TD
     Search --> Public
 
     Public --> Browser["Browser: app.js + Fuse.js read search-index.json client-side"]
-    Public -.->|"a zip URL, copy-pasted"| Installer["installer/ (separate Node package)"]
+    Public -.->|"a zip URL, copy-pasted"| Skills["npx skills add (third-party, not part of this repo)"]
 ```
 
 `internal/skill` only knows how to turn `SKILL.md` files into `Skill`
 values; `internal/site` only knows how to turn `[]*skill.Skill` into
 output files. Neither package logs — `cmd` owns all logging, so the two
-packages stay usable as plain libraries. The `installer/` Node package is
-entirely decoupled from the Go binary: it only ever talks to it indirectly,
-by fetching a zip URL a generated site printed.
+packages stay usable as plain libraries. The generated site's `npx`
+install command is a thin wrapper around
+[`skills`](https://github.com/vercel-labs/skills), a third-party CLI this
+project doesn't build or ship — it only ever talks to it indirectly, by
+printing a zip URL that `skills add` knows how to fetch. See
+[Stack](./stack.md) and [Pitfalls](./pitfalls.md).
 
 ## The generate pipeline (sequence)
 

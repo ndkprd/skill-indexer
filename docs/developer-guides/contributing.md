@@ -20,8 +20,6 @@ tags: [developer-guide, contributing]
    go build ./... && go vet ./... && gofmt -l . && go test ./...
    ```
 
-   If you touched `installer/`, also run `cd installer && bun test`.
-
 4. Commit with a message that explains _why_, not just _what_ — see this
    repo's own `git log` for examples of the expected level of detail.
 5. Open a merge request against `main`. Nothing merges to `main` without
@@ -29,17 +27,11 @@ tags: [developer-guide, contributing]
 
 ## Release process
 
-There is no tagged release process yet. Two version strings currently
-exist, hand-edited independently, that happen to match by coincidence
-(both `"0.1.0"`) rather than by anything keeping them in sync:
-
-- `internal/site.Version` in `internal/site/render.go`, shown in every
-  generated site's footer.
-- `"version"` in `installer/package.json`, the separate
-  `skillstore-install` npm package's own version.
-
-If you're introducing versioned releases, update both, and consider
-whether they should be tied together going forward.
+There is no tagged release process yet — `internal/site.Version` in
+`internal/site/render.go` (shown in every generated site's footer) is a
+single hand-edited constant, currently `"0.1.0"`. If you're introducing
+versioned releases, that's the one place the version string is currently
+sourced from.
 
 ## Related
 
