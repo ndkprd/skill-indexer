@@ -17,7 +17,7 @@ running the CLI itself.
 ## Clone and build
 
 ```bash
-git clone https://gitlab.com/endekasoft/skillstore.git
+git clone https://gitlab.com/endekasoft/skill-indexer.git
 cd skill-indexer
 go build ./...
 ```

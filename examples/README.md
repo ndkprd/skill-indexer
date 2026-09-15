@@ -70,7 +70,7 @@ ahead of an nginx container that serves the result, all sharing per-pod
 Before applying it, you need to:
 
 1. Build and push your own Skill Indexer image (see the `Dockerfile`) and
-   replace `registry.gitlab.com/endekasoft/skillstore:latest` in the
+   replace `registry.gitlab.com/endekasoft/skill-indexer:latest` in the
    manifest with wherever you pushed it.
 2. Replace `https://git.example.com/skills.git` with your real skills
    repository (a private repo needs a mounted credentials Secret for the

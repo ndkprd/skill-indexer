@@ -91,7 +91,7 @@ missing from the output.
 ## Site branding
 
 The generated site's footer ("Skill Indexer vX.Y.Z | by ndkprd", linking to
-`gitlab.com/endekasoft/skillstore` and `gitlab.com/endekasoft`) is
+`gitlab.com/endekasoft/skill-indexer` and `gitlab.com/endekasoft`) is
 currently **hardcoded** in `internal/site/templates/index.html.tmpl` —
 there is no flag or config option to change or remove it. Anyone
 generating their own site with this version of Skill Indexer will ship that

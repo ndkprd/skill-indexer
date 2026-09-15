@@ -5,7 +5,7 @@
 # This is a template, not something you can `kubectl apply -f` unmodified:
 #
 #   1. Build and push your own Skill Indexer image (see ../Dockerfile) and
-#      replace `registry.gitlab.com/endekasoft/skillstore:latest` below
+#      replace `registry.gitlab.com/endekasoft/skill-indexer:latest` below
 #      with wherever you actually pushed it — that value is this project's
 #      own registry path, not a published, pullable image; substitute your
 #      own if you're not endekasoft.
@@ -49,7 +49,7 @@ spec:
               mountPath: /skills
 
         - name: generate-site
-          image: registry.gitlab.com/endekasoft/skillstore:latest
+          image: registry.gitlab.com/endekasoft/skill-indexer:latest
           args: ["--skill-dir", "/skills", "--output-dir", "/site"]
           # See the docker-compose.yaml comment: root is needed only to
           # write into the freshly-mounted, empty `site` volume.

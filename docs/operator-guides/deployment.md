@@ -98,7 +98,7 @@ applicable, not something to `kubectl apply -f` unmodified. Structure:
 
 A `Service` in the same file exposes the Deployment on port 80. See the
 file's own comments for the two substitutions required
-(`registry.gitlab.com/endekasoft/skillstore:latest` and the real skills repo URL) and a
+(`registry.gitlab.com/endekasoft/skill-indexer:latest` and the real skills repo URL) and a
 note on the tradeoff of per-replica clone+generate versus a shared
 PersistentVolume for larger skill sets.
 

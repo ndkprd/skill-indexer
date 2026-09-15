@@ -36,7 +36,7 @@ static files; no backend is required to host it.
 
 ## Related
 
-- [gitlab.com/endekasoft/skillstore](https://gitlab.com/endekasoft/skillstore) — source
+- [gitlab.com/endekasoft/skill-indexer](https://gitlab.com/endekasoft/skill-indexer) — source
 - [examples/](../examples/README.md) — a runnable quickstart and a
   copy-pasteable GitLab CI pipeline
 - [PRODUCT.md](../PRODUCT.md) — the strategic brief this project is built

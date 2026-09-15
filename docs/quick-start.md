@@ -16,7 +16,7 @@ tags: [quick-start, cli]
 ## 1. Clone and build
 
 ```bash
-git clone https://gitlab.com/endekasoft/skillstore.git
+git clone https://gitlab.com/endekasoft/skill-indexer.git
 cd skill-indexer
 go build -o skill-indexer .
 ```
