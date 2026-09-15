@@ -1,13 +1,13 @@
 ---
 title: Operator Guides
-description: How to install, configure, and deploy Skillstore-generated sites.
+description: How to install, configure, and deploy Skill Indexer-generated sites.
 tags: [operator-guide]
 sidebar_position: 3
 ---
 
 # Operator Guides
 
-These guides are for whoever builds the Skillstore CLI, runs it against a
+These guides are for whoever builds the Skill Indexer CLI, runs it against a
 skills directory, and publishes the result — locally, in a container, or
 via CI.
 

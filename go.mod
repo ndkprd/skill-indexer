@@ -1,4 +1,4 @@
-module skillstore
+module skill-indexer
 
 go 1.27.1
 

@@ -1,12 +1,12 @@
 ---
-title: Skillstore
+title: Skill Indexer
 description: A static site generator that turns a directory of Claude Code skills into a searchable marketplace.
-tags: [overview, skillstore]
+tags: [overview, skill-indexer]
 ---
 
-# Skillstore
+# Skill Indexer
 
-Skillstore is a Go CLI that scans a directory of [Claude Code
+Skill Indexer is a Go CLI that scans a directory of [Claude Code
 skills](https://docs.claude.com/) — each a folder with a `SKILL.md`
 frontmatter file — and generates a static, searchable marketplace site: a
 card grid with a slide-in detail panel, zip downloads, copy-paste `npx`
@@ -20,7 +20,7 @@ static files; no backend is required to host it.
 - **Operators** — whoever builds the CLI, runs it against a `skills/`
   directory, and publishes the result (locally, via Docker Compose, on
   Kubernetes, or via CI). See [Operator Guides](./operator-guides/index.md).
-- **Contributors** — anyone changing Skillstore itself. See [Developer
+- **Contributors** — anyone changing Skill Indexer itself. See [Developer
   Guides](./developer-guides/index.md).
 
 ## In This Section
@@ -30,7 +30,7 @@ static files; no backend is required to host it.
 - [User Guides](./user-guides/index.md) — using the generated marketplace
   site
 - [Operator Guides](./operator-guides/index.md) — installing, configuring,
-  and deploying Skillstore
+  and deploying Skill Indexer
 - [Developer Guides](./developer-guides/index.md) — architecture, stack,
   and contributing
 

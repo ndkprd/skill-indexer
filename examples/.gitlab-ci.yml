@@ -1,4 +1,4 @@
-# Example GitLab CI pipeline for Skillstore.
+# Example GitLab CI pipeline for Skill Indexer.
 #
 # Copy this file to the root of your repository as `.gitlab-ci.yml` (adjust
 # `--skill-dir` below if your skills live somewhere other than `skills/`).
@@ -19,8 +19,8 @@ stages:
 pages:
   stage: deploy
   script:
-    - go build -o skillstore .
-    - ./skillstore --skill-dir skills --output-dir public
+    - go build -o skill-indexer .
+    - ./skill-indexer --skill-dir skills --output-dir public
   artifacts:
     paths:
       - public

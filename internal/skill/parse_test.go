@@ -8,42 +8,56 @@ import (
 
 func TestParseFrontmatter(t *testing.T) {
 	t.Run("nested metadata map", func(t *testing.T) {
-		s, err := ParseFrontmatter("../../examples/skills/vue/SKILL.md")
+		s, err := ParseFrontmatter("../../examples/skills/web-design-guidelines/SKILL.md")
 		if err != nil {
 			t.Fatalf("ParseFrontmatter returned error: %v", err)
 		}
-		if s.Name != "vue" {
-			t.Errorf("Name = %q, want %q", s.Name, "vue")
+		if s.Name != "web-design-guidelines" {
+			t.Errorf("Name = %q, want %q", s.Name, "web-design-guidelines")
 		}
 		if s.Description == "" {
 			t.Error("Description is empty, want non-empty")
 		}
-		if got, want := s.Metadata["author"], "Anthony Fu"; got != want {
+		if got, want := s.Metadata["author"], "vercel"; got != want {
 			t.Errorf("Metadata[author] = %v, want %v", got, want)
 		}
-		if got, want := s.Metadata["version"], "2026.1.31"; got != want {
+		if got, want := s.Metadata["version"], "1.0.0"; got != want {
 			t.Errorf("Metadata[version] = %v, want %v", got, want)
 		}
-		if s.Metadata["source"] == nil {
-			t.Error("Metadata[source] is nil, want a value")
+		if s.Metadata["argument-hint"] == nil {
+			t.Error("Metadata[argument-hint] is nil, want a value")
 		}
-		if !strings.Contains(s.Body, "# Vue") {
+		if !strings.Contains(s.Body, "# Web Interface Guidelines") {
 			t.Errorf("Body does not contain expected heading, got: %q", truncate(s.Body, 80))
 		}
 	})
 
 	t.Run("top-level license and compatibility with 4-space metadata indent", func(t *testing.T) {
-		s, err := ParseFrontmatter("../../examples/skills/vueuse-functions/SKILL.md")
+		// Synthetic rather than a real fixture: no single real skill in
+		// examples/skills/ combines top-level license/compatibility with a
+		// 4-space-indented metadata block, and the fixture set has already
+		// changed shape twice. Constructing the exact shape here decouples
+		// this edge case from whichever skills happen to exist.
+		dir := t.TempDir()
+		path := filepath.Join(dir, "SKILL.md")
+		writeFile(t, path, "---\n"+
+			"name: synthetic-skill\n"+
+			"description: A synthetic skill for testing 4-space metadata indent.\n"+
+			"license: MIT\n"+
+			"compatibility: Requires a compatible thing\n"+
+			"metadata:\n"+
+			"    author: someone\n"+
+			"    version: \"1.1\"\n"+
+			"---\n\nBody.\n")
+
+		s, err := ParseFrontmatter(path)
 		if err != nil {
 			t.Fatalf("ParseFrontmatter returned error: %v", err)
-		}
-		if s.Name != "vueuse-functions" {
-			t.Errorf("Name = %q, want %q", s.Name, "vueuse-functions")
 		}
 		if got, want := s.Metadata["license"], "MIT"; got != want {
 			t.Errorf("Metadata[license] = %v, want %v", got, want)
 		}
-		if got, want := s.Metadata["compatibility"], "Requires Vue 3 (or above) or Nuxt 3 (or above) project"; got != want {
+		if got, want := s.Metadata["compatibility"], "Requires a compatible thing"; got != want {
 			t.Errorf("Metadata[compatibility] = %v, want %v", got, want)
 		}
 		if s.Metadata["author"] == nil {
@@ -55,12 +69,12 @@ func TestParseFrontmatter(t *testing.T) {
 	})
 
 	t.Run("minimal frontmatter with only name and description", func(t *testing.T) {
-		s, err := ParseFrontmatter("../../examples/skills/bun/SKILL.md")
+		s, err := ParseFrontmatter("../../examples/skills/find-skills/SKILL.md")
 		if err != nil {
 			t.Fatalf("ParseFrontmatter returned error: %v", err)
 		}
-		if s.Name != "bun" {
-			t.Errorf("Name = %q, want %q", s.Name, "bun")
+		if s.Name != "find-skills" {
+			t.Errorf("Name = %q, want %q", s.Name, "find-skills")
 		}
 		if s.Description == "" {
 			t.Error("Description is empty, want non-empty")
@@ -87,17 +101,17 @@ func TestParseFrontmatter(t *testing.T) {
 		}
 	})
 
-	t.Run("top-level allowed-tools string folded into metadata", func(t *testing.T) {
-		s, err := ParseFrontmatter("../../examples/skills/playwright-cli/SKILL.md")
+	t.Run("top-level string key folded into metadata", func(t *testing.T) {
+		s, err := ParseFrontmatter("../../examples/skills/frontend-design/SKILL.md")
 		if err != nil {
 			t.Fatalf("ParseFrontmatter returned error: %v", err)
 		}
-		allowedTools, ok := s.Metadata["allowed-tools"].(string)
+		license, ok := s.Metadata["license"].(string)
 		if !ok {
-			t.Fatalf("Metadata[allowed-tools] = %T(%v), want string", s.Metadata["allowed-tools"], s.Metadata["allowed-tools"])
+			t.Fatalf("Metadata[license] = %T(%v), want string", s.Metadata["license"], s.Metadata["license"])
 		}
-		if !strings.Contains(allowedTools, "playwright-cli") {
-			t.Errorf("allowed-tools = %q, want it to mention playwright-cli", allowedTools)
+		if !strings.Contains(license, "LICENSE") {
+			t.Errorf("license = %q, want it to mention LICENSE", license)
 		}
 	})
 

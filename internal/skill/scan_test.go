@@ -36,8 +36,8 @@ func TestScanDir(t *testing.T) {
 	t.Run("skips a broken skill directory with one warning", func(t *testing.T) {
 		root := t.TempDir()
 
-		copyDir(t, "../../examples/skills/vue", filepath.Join(root, "vue"))
 		copyDir(t, "../../examples/skills/gitlab-cli", filepath.Join(root, "gitlab-cli"))
+		copyDir(t, "../../examples/skills/find-skills", filepath.Join(root, "find-skills"))
 
 		// Broken: no SKILL.md at all.
 		if err := os.MkdirAll(filepath.Join(root, "no-skill-md"), 0o755); err != nil {
@@ -57,8 +57,8 @@ func TestScanDir(t *testing.T) {
 		for _, s := range skills {
 			names[s.DirName] = true
 		}
-		if !names["vue"] || !names["gitlab-cli"] {
-			t.Errorf("skills = %v, want vue and gitlab-cli present", names)
+		if !names["gitlab-cli"] || !names["find-skills"] {
+			t.Errorf("skills = %v, want gitlab-cli and find-skills present", names)
 		}
 	})
 }

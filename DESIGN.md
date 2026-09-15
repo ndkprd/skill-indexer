@@ -1,5 +1,5 @@
 ---
-name: Skillstore
+name: Skill Indexer
 description: A static marketplace for Claude Code skills — browse, search, install.
 colors:
   bg-light: "oklch(98.3% 0.004 265)"
@@ -74,7 +74,7 @@ components:
     backgroundColor: "{colors.accent-hover-light}"
 ---
 
-# Design System: Skillstore
+# Design System: Skill Indexer
 
 ## 1. Overview
 

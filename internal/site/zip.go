@@ -10,7 +10,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"skillstore/internal/skill"
+	"skill-indexer/internal/skill"
 )
 
 // ZipSkillDir archives the entire contents of s.DirPath into a new zip

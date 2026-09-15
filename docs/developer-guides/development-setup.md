@@ -1,6 +1,6 @@
 ---
 title: Development Setup
-description: Setting up a local environment to work on Skillstore itself.
+description: Setting up a local environment to work on Skill Indexer itself.
 tags: [developer-guide, setup]
 ---
 
@@ -18,7 +18,7 @@ running the CLI itself.
 
 ```bash
 git clone https://gitlab.com/endekasoft/skillstore.git
-cd skillstore
+cd skill-indexer
 go build ./...
 ```
 
@@ -28,7 +28,7 @@ go build ./...
 go run . --skill-dir examples/skills --output-dir public
 ```
 
-`examples/skills/` (33 real skills) is both the manual-testing fixture set
+`examples/skills/` (6 real skills) is both the manual-testing fixture set
 and what `go test` reads — see [Testing](./testing.md).
 
 ## Run the checks

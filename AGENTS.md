@@ -4,7 +4,7 @@ Instructions for AI coding agents working in this repository.
 
 ## What this is
 
-`skillstore` is a Go CLI that generates a static "skill marketplace"
+`skill-indexer` is a Go CLI that generates a static "skill marketplace"
 site from a directory of Claude Code skills. See `README.md` for the user-facing
 overview, `PRODUCT.md` for who it's for and why, and `DESIGN.md` for the
 visual design system. The implementation plan and its resolved FAQ live at
@@ -30,11 +30,15 @@ Sample skills live at `examples/skills/` (not `skills/` at the repo root —
 they were moved there to sit alongside the `examples/.gitlab-ci.yml` and
 `examples/README.md` quickstarts). All test fixture paths in
 `internal/skill/*_test.go` and `internal/site/zip_test.go` point at
-`../../examples/skills/...` accordingly. `examples/skills/` intentionally
-excludes the ASDP-internal skills that were in the original 46-skill set
-(33 remain) — `internal/skill/scan_test.go`'s count assertion reads the
-directory itself rather than hardcoding a number, specifically so it
-doesn't go stale again if that set changes further.
+`../../examples/skills/...` accordingly. This set has already been pruned
+twice (46 → 33, dropping ASDP-internal skills; then 33 → 6, trimming
+further) — `internal/skill/scan_test.go`'s count assertion reads the
+directory itself rather than hardcoding a number, so it survives that. The
+_named_ fixtures other tests reference (`parse_test.go`'s specific skills
+for each frontmatter shape, `zip_test.go`'s skill with a `references/`
+subdirectory) are **not** self-adjusting the same way — if you prune
+`examples/skills/` again, check those tests still point at skills that
+exist and still have the shape each subtest needs.
 
 ## Conventions
 
@@ -80,7 +84,8 @@ doesn't go stale again if that set changes further.
     `npx skills add <zip-url> -a claude-code -y[-g]` — the third-party
     [`vercel-labs/skills`](https://github.com/vercel-labs/skills) CLI, not
     a package this project ships. There used to be a custom
-    `installer/skillstore-install` Node package doing the same job; it was
+    `installer/skillstore-install` Node package doing the same job (from
+    when this project was still called "Skillstore"); it was
     deleted once `skills` was confirmed to support installing directly
     from a zip download URL, since that meant no unpublished package of
     our own was needed. `skills` requires Node.js 22.20+, and its
@@ -122,7 +127,7 @@ doesn't go stale again if that set changes further.
 ## Things to not reintroduce
 
 - No `serve` subcommand — explicitly rejected in favor of a single
-  generate-only root command (`skillstore --skill-dir ... --output-dir
+  generate-only root command (`skill-indexer --skill-dir ... --output-dir
 ...`). Users run their own static file server.
 - No CSS framework, no JS build step for the generated site — it's rendered
   entirely via `html/template` + `go:embed` so the generator stays one

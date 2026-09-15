@@ -1,4 +1,4 @@
-# Example Docker Compose setup for Skillstore: a one-shot `generate`
+# Example Docker Compose setup for Skill Indexer: a one-shot `generate`
 # service builds the site into a shared volume, then `web` (nginx) serves
 # it. `generate` exits after one run; `web` keeps running.
 #
@@ -9,7 +9,7 @@
 # examples/skills/ fixtures — for real use, either copy this file (and the
 # Dockerfile) into your own project and point the `generate` service's
 # `./skills` volume at your own skills directory, or adjust the `build:`
-# section to build from wherever you keep Skillstore's source.
+# section to build from wherever you keep Skill Indexer's source.
 
 services:
   generate:

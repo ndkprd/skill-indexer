@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"skillstore/internal/skill"
+	"skill-indexer/internal/skill"
 )
 
 func fixtureSkills() []*skill.Skill {

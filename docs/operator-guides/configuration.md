@@ -1,12 +1,12 @@
 ---
 title: Configuration
-description: Full reference for the Skillstore CLI's flags and the SKILL.md format it reads.
+description: Full reference for the Skill Indexer CLI's flags and the SKILL.md format it reads.
 tags: [operator-guide, configuration, reference]
 ---
 
 # Configuration
 
-Skillstore has no environment variables and no config file. Everything is
+Skill Indexer has no environment variables and no config file. Everything is
 either a CLI flag or a convention about the shape of a `SKILL.md` file.
 
 ## CLI flags
@@ -20,7 +20,7 @@ either a CLI flag or a convention about the shape of a `SKILL.md` file.
 Example:
 
 ```bash
-skillstore --skill-dir path/to/skills --output-dir dist
+skill-indexer --skill-dir path/to/skills --output-dir dist
 ```
 
 > **Warning:** `--output-dir` is fully wiped (`os.RemoveAll`) before
@@ -90,11 +90,11 @@ missing from the output.
 
 ## Site branding
 
-The generated site's footer ("Skillstore vX.Y.Z | by ndkprd", linking to
+The generated site's footer ("Skill Indexer vX.Y.Z | by ndkprd", linking to
 `gitlab.com/endekasoft/skillstore` and `gitlab.com/endekasoft`) is
 currently **hardcoded** in `internal/site/templates/index.html.tmpl` —
 there is no flag or config option to change or remove it. Anyone
-generating their own site with this version of Skillstore will ship that
+generating their own site with this version of Skill Indexer will ship that
 same attribution. If you need different branding, you currently have to
 edit the template source directly before building.
 

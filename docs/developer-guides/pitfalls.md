@@ -1,6 +1,6 @@
 ---
 title: Pitfalls
-description: Known gotchas and non-obvious decisions worth knowing before changing Skillstore.
+description: Known gotchas and non-obvious decisions worth knowing before changing Skill Indexer.
 tags: [developer-guide, pitfalls]
 ---
 
@@ -100,8 +100,9 @@ project builds and ships nothing to make that command work — it relies on
 and continuing to accept `-a`/`-y`/`-g` the way it does today. If that
 package's behavior changes incompatibly, the fix is in `app.js`'s command
 string, not in any Go code. A previous version of this project shipped its
-own `installer/skillstore-install` npm package doing the same job by hand
-(fetch a URL, extract a zip) — it was deleted in favor of `skills` once
+own `installer/skillstore-install` npm package (from when this project
+was still called "Skillstore") doing the same job by hand — fetch a URL,
+extract a zip — it was deleted in favor of `skills` once
 zip-URL support was confirmed, since maintaining and publishing a package
 of our own added nothing `skills` didn't already do. Don't reintroduce a
 bundled installer without a concrete reason `skills` stopped working.
@@ -122,6 +123,20 @@ time — the Go side has no concept of the site's eventual public URL and
 never needs one. If you're debugging a "wrong URL" report, the cause is
 almost always how the site is being _served_ (a proxy rewriting the
 origin, or the page opened via `file://`), not the generator.
+
+## `examples/skills/` fixture churn breaks tests silently unless you check
+
+`internal/skill/scan_test.go`'s skill-count assertion reads
+`examples/skills/`'s own directory listing rather than a hardcoded number
+(see [Testing](./testing.md)), so it survives the fixture set changing
+size — it already has, twice. But `parse_test.go` and `zip_test.go`
+reference specific _named_ skills to test specific frontmatter shapes
+(a nested `metadata:` map, a minimal skill, a `references/` subdirectory,
+...) — those aren't self-adjusting. If a skill those tests depend on gets
+removed from `examples/skills/`, the tests fail with a plain "no such file
+or directory", not a helpful message pointing at the real cause. If you
+prune `examples/skills/`, run `go test ./...` afterward and expect to
+pick new named fixtures for whatever shape each failing subtest needs.
 
 ## Related
 

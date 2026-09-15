@@ -1,12 +1,12 @@
 ---
 title: Deployment
-description: Running Skillstore via Docker, Docker Compose, Kubernetes, and GitLab Pages.
+description: Running Skill Indexer via Docker, Docker Compose, Kubernetes, and GitLab Pages.
 tags: [operator-guide, deployment, docker, kubernetes, gitlab-ci]
 ---
 
 # Deployment
 
-Skillstore's output is plain static files (`index.html`, `assets/`,
+Skill Indexer's output is plain static files (`index.html`, `assets/`,
 `downloads/*.zip`, `search-index.json`). Once generated, host it anywhere
 that serves static files — the four paths documented here (Docker, Docker
 Compose, Kubernetes, GitLab Pages) cover generation and a couple of common
@@ -15,18 +15,18 @@ publishing targets, but any static host works equally well.
 ```mermaid
 graph TD
     subgraph Local_or_Docker["Local / Docker"]
-        A[skillstore CLI] -->|writes| B["public/"]
+        A[skill-indexer CLI] -->|writes| B["public/"]
         B --> C[Any static file server]
     end
     subgraph Compose["Docker Compose"]
-        G["generate service (skillstore, one-shot)"] -->|shared volume| H["web service (nginx)"]
+        G["generate service (skill-indexer, one-shot)"] -->|shared volume| H["web service (nginx)"]
     end
     subgraph K8s["Kubernetes Deployment"]
-        I["initContainer: fetch-skills (git clone)"] --> J["initContainer: generate-site (skillstore)"]
+        I["initContainer: fetch-skills (git clone)"] --> J["initContainer: generate-site (skill-indexer)"]
         J -->|emptyDir volume| K["container: nginx"]
     end
     subgraph GitLab_CI["GitLab CI"]
-        D[git push] --> E["pages job: go build + run skillstore"]
+        D[git push] --> E["pages job: go build + run skill-indexer"]
         E -->|artifact: public/| F[GitLab Pages]
     end
 ```
@@ -41,17 +41,17 @@ Build the image once (see [Installation](./installation.md)), then run it
 against a mounted skills directory and output directory:
 
 ```bash
-docker build -t skillstore .
+docker build -t skill-indexer .
 
 docker run --rm \
   -v "$(pwd)/skills:/skills:ro" \
   -v "$(pwd)/public:/public" \
-  skillstore --skill-dir /skills --output-dir /public
+  skill-indexer --skill-dir /skills --output-dir /public
 ```
 
 The container exits after generating; `./public` on the host now has the
 site. Serve it with whatever you'd normally use for static files (nginx,
-Caddy, a CDN origin, etc.) — the Skillstore image itself is not a web
+Caddy, a CDN origin, etc.) — the Skill Indexer image itself is not a web
 server.
 
 **Resource footprint**: the compiled binary is a few megabytes with no
@@ -88,7 +88,7 @@ applicable, not something to `kubectl apply -f` unmodified. Structure:
 
 1. **`fetch-skills` init container** (`alpine/git`) clones your skills
    repository into a per-pod `emptyDir` volume.
-2. **`generate-site` init container** (your built Skillstore image) reads
+2. **`generate-site` init container** (your built Skill Indexer image) reads
    that volume and writes the generated site into a second `emptyDir`
    volume. Like the Compose example, it runs as root
    (`securityContext.runAsUser: 0`) only to write into that freshly-empty
@@ -113,8 +113,8 @@ pages:
   stage: deploy
   image: golang:1.27
   script:
-    - go build -o skillstore .
-    - ./skillstore --skill-dir skills --output-dir public
+    - go build -o skill-indexer .
+    - ./skill-indexer --skill-dir skills --output-dir public
   artifacts:
     paths:
       - public
@@ -138,13 +138,14 @@ one of two ways to get a skill. `skills` is
 already-published, actively maintained third-party CLI, not anything this
 project ships. Nothing needs to be published or configured by you for this
 to work, unlike an earlier version of this project that shipped its own
-unpublished `installer/skillstore-install` package. The only real
+unpublished `installer/skillstore-install` package (from when this
+project was still called "Skillstore"). The only real
 precondition is the visitor's own environment: `skills` requires Node.js
 22.20+.
 
 ## Site branding
 
-The generated footer's "Skillstore vX.Y.Z | by ndkprd" attribution and its
+The generated footer's "Skill Indexer vX.Y.Z | by ndkprd" attribution and its
 links are hardcoded in the template — see
 [Configuration → Site branding](./configuration.md#site-branding) if you
 need to change or remove it before publishing your own site.

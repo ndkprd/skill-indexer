@@ -1,6 +1,6 @@
 ---
 title: Troubleshooting
-description: Symptom-to-fix table for common Skillstore generation and deployment issues.
+description: Symptom-to-fix table for common Skill Indexer generation and deployment issues.
 tags: [operator-guide, troubleshooting]
 ---
 
@@ -8,7 +8,7 @@ tags: [operator-guide, troubleshooting]
 
 ## Log locations
 
-Skillstore logs structured lines to **stderr only** — there is no log
+Skill Indexer logs structured lines to **stderr only** — there is no log
 file. Every run logs a `generate_start` event, one `skill_skipped` warning
 per invalid skill, a `skills_scanned` summary, and a `generate_done` event
 with the final count. There's no separate debug mode.

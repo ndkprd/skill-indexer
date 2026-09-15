@@ -1,10 +1,10 @@
-# Example Kubernetes Deployment for Skillstore: two init containers
+# Example Kubernetes Deployment for Skill Indexer: two init containers
 # (clone skills, then generate the site) followed by nginx serving the
 # result, all sharing per-pod emptyDir volumes.
 #
 # This is a template, not something you can `kubectl apply -f` unmodified:
 #
-#   1. Build and push your own Skillstore image (see ../Dockerfile) and
+#   1. Build and push your own Skill Indexer image (see ../Dockerfile) and
 #      replace `registry.gitlab.com/endekasoft/skillstore:latest` below
 #      with wherever you actually pushed it — that value is this project's
 #      own registry path, not a published, pullable image; substitute your
@@ -23,18 +23,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: skillstore
+  name: skill-indexer
   labels:
-    app: skillstore
+    app: skill-indexer
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: skillstore
+      app: skill-indexer
   template:
     metadata:
       labels:
-        app: skillstore
+        app: skill-indexer
     spec:
       initContainers:
         - name: fetch-skills
@@ -94,10 +94,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: skillstore
+  name: skill-indexer
 spec:
   selector:
-    app: skillstore
+    app: skill-indexer
   ports:
     - port: 80
       targetPort: 80

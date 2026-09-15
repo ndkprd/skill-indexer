@@ -1,6 +1,6 @@
 ---
 title: Contributing
-description: How to make and submit a change to Skillstore.
+description: How to make and submit a change to Skill Indexer.
 tags: [developer-guide, contributing]
 ---
 

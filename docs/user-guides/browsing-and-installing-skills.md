@@ -1,6 +1,6 @@
 ---
 title: Browsing and Installing Skills
-description: How to search, inspect, and install a skill from a generated Skillstore site.
+description: How to search, inspect, and install a skill from a generated Skill Indexer site.
 tags: [user-guide, search, install]
 ---
 

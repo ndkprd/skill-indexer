@@ -1,6 +1,6 @@
 ---
 title: Installation
-description: System requirements and install procedure for the Skillstore CLI.
+description: System requirements and install procedure for the Skill Indexer CLI.
 tags: [operator-guide, installation]
 ---
 
@@ -16,28 +16,28 @@ tags: [operator-guide, installation]
 | kubectl + a cluster | any recent version    | Only for deploying `examples/kubernetes.yaml`                                                                |
 | Node.js             | 22.20+                | Only for end users running the generated `npx` install command — not required to build or run the CLI itself |
 
-Skillstore itself has no runtime dependencies beyond the compiled binary:
+Skill Indexer itself has no runtime dependencies beyond the compiled binary:
 no database, no external services, no environment-specific configuration.
 
 ## Option A: build from source
 
 ```bash
 git clone https://gitlab.com/endekasoft/skillstore.git
-cd skillstore
-go build -o skillstore .
+cd skill-indexer
+go build -o skill-indexer .
 ```
 
-This produces a single static binary, `skillstore`, in the repository
+This produces a single static binary, `skill-indexer`, in the repository
 root. Move it onto your `PATH` if you want to run it from anywhere:
 
 ```bash
-mv skillstore /usr/local/bin/
+mv skill-indexer /usr/local/bin/
 ```
 
 ## Option B: build a container image
 
 ```bash
-docker build -t skillstore .
+docker build -t skill-indexer .
 ```
 
 The image is based on `gcr.io/distroless/static-debian12:nonroot` and
@@ -47,18 +47,18 @@ as a non-root user. See [Deployment](./deployment.md) for how to run it.
 ## Verify the install
 
 ```bash
-./skillstore --help
+./skill-indexer --help
 ```
 
 should print usage text listing `--skill-dir` and `--output-dir`. To verify
 end to end, generate the bundled sample site:
 
 ```bash
-./skillstore --skill-dir examples/skills --output-dir /tmp/skillstore-check
+./skill-indexer --skill-dir examples/skills --output-dir /tmp/skill-indexer-check
 ```
 
-and confirm `/tmp/skillstore-check/index.html` and
-`/tmp/skillstore-check/search-index.json` were created, with no `WRN`
+and confirm `/tmp/skill-indexer-check/index.html` and
+`/tmp/skill-indexer-check/search-index.json` were created, with no `WRN`
 (warning) lines in the CLI's log output.
 
 ## Related

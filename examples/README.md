@@ -1,9 +1,9 @@
 # Examples
 
-Four ways to get a Skillstore site running, plus the sample data most of
+Four ways to get a Skill Indexer site running, plus the sample data most of
 them (and the test suite) use.
 
-- `skills/` — 33 real Claude Code skills, used as fixture data by `go test`
+- `skills/` — 6 real Claude Code skills, used as fixture data by `go test`
   and as the sample input for the quickstarts below.
 - `.gitlab-ci.yml` — a copy-pasteable pipeline that builds the CLI and
   publishes the generated site to GitLab Pages.
@@ -17,8 +17,8 @@ them (and the test suite) use.
 From the repository root:
 
 ```bash
-go build -o skillstore .
-./skillstore --skill-dir examples/skills --output-dir public
+go build -o skill-indexer .
+./skill-indexer --skill-dir examples/skills --output-dir public
 ```
 
 Then serve `public/` with any static file server, e.g.:
@@ -63,13 +63,13 @@ the comments in the file for details.
 
 `examples/kubernetes.yaml` is a Deployment template — not something to
 `kubectl apply -f` unmodified. It chains two init containers (clone your
-skills repo with `git`, then generate the site with the Skillstore image)
+skills repo with `git`, then generate the site with the Skill Indexer image)
 ahead of an nginx container that serves the result, all sharing per-pod
 `emptyDir` volumes.
 
 Before applying it, you need to:
 
-1. Build and push your own Skillstore image (see the `Dockerfile`) and
+1. Build and push your own Skill Indexer image (see the `Dockerfile`) and
    replace `registry.gitlab.com/endekasoft/skillstore:latest` in the
    manifest with wherever you pushed it.
 2. Replace `https://git.example.com/skills.git` with your real skills
@@ -86,11 +86,11 @@ The repository root also has a `Dockerfile` that packages the CLI (not the
 generated site) into a minimal image:
 
 ```bash
-docker build -t skillstore .
+docker build -t skill-indexer .
 docker run --rm \
   -v "$(pwd)/examples/skills:/skills:ro" \
   -v "$(pwd)/public:/public" \
-  skillstore --skill-dir /skills --output-dir /public
+  skill-indexer --skill-dir /skills --output-dir /public
 ```
 
 Useful if you'd rather run generation inside your own infrastructure by

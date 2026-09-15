@@ -1,6 +1,6 @@
 ---
 title: Stack
-description: Languages, frameworks, and libraries Skillstore is built on, and why.
+description: Languages, frameworks, and libraries Skill Indexer is built on, and why.
 tags: [developer-guide, stack]
 ---
 
@@ -39,7 +39,8 @@ installing directly from a zip download URL, which is exactly what
 Requires Node.js 22.20+ on whoever runs the install command.
 
 This project used to ship its own `installer/skillstore-install` npm
-package doing the same job. It was deleted once `skills` was confirmed to
+package (from when this project was still called "Skillstore") doing the
+same job. It was deleted once `skills` was confirmed to
 support zip-URL installs — maintaining and publishing our own package
 added nothing `skills` didn't already do. See [Pitfalls](./pitfalls.md).
 

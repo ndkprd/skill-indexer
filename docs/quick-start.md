@@ -1,6 +1,6 @@
 ---
 title: Quick Start
-description: Generate and view a Skillstore site in under 5 minutes.
+description: Generate and view a Skill Indexer site in under 5 minutes.
 tags: [quick-start, cli]
 ---
 
@@ -17,14 +17,14 @@ tags: [quick-start, cli]
 
 ```bash
 git clone https://gitlab.com/endekasoft/skillstore.git
-cd skillstore
-go build -o skillstore .
+cd skill-indexer
+go build -o skill-indexer .
 ```
 
 ## 2. Generate the site
 
 ```bash
-./skillstore --skill-dir examples/skills --output-dir public
+./skill-indexer --skill-dir examples/skills --output-dir public
 ```
 
 There is no other configuration to set — those two flags are the entire
@@ -45,7 +45,7 @@ download button. The CLI itself prints structured log lines to stderr as it
 runs, ending with something like:
 
 ```text
-INF generation complete event=generate_done output_dir=public skill_count=33
+INF generation complete event=generate_done output_dir=public skill_count=6
 ```
 
 ## Next steps
@@ -59,4 +59,4 @@ INF generation complete event=generate_done output_dir=public skill_count=33
 ## Related
 
 - [Operator Guides](./operator-guides/index.md) — full installation and deployment options
-- [Developer Guides](./developer-guides/index.md) — for contributing to Skillstore itself
+- [Developer Guides](./developer-guides/index.md) — for contributing to Skill Indexer itself

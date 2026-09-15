@@ -1,6 +1,6 @@
 ---
 title: Architecture
-description: Skillstore's components, data flow, and how a generate run turns skills into a site.
+description: Skill Indexer's components, data flow, and how a generate run turns skills into a site.
 tags: [developer-guide, architecture]
 ---
 
@@ -56,7 +56,7 @@ sequenceDiagram
     participant Site as internal/site
     participant FS as Filesystem
 
-    User->>Cmd: skillstore --skill-dir X --output-dir Y
+    User->>Cmd: skill-indexer --skill-dir X --output-dir Y
     Cmd->>FS: RemoveAll(Y); MkdirAll(Y)
     Cmd->>Skill: ScanDir(X)
     loop each subdirectory of X

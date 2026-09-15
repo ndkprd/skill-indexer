@@ -1,13 +1,13 @@
 ---
 title: Developer Guides
-description: Architecture, stack, and conventions for contributing to Skillstore.
+description: Architecture, stack, and conventions for contributing to Skill Indexer.
 tags: [developer-guide]
 sidebar_position: 4
 ---
 
 # Developer Guides
 
-These guides are for anyone changing Skillstore's own code (the Go CLI and
+These guides are for anyone changing Skill Indexer's own code (the Go CLI and
 its templates/assets).
 
 ## In This Section

@@ -10,7 +10,7 @@ import (
 	"sort"
 	"strings"
 
-	"skillstore/internal/skill"
+	"skill-indexer/internal/skill"
 )
 
 //go:embed templates/*.html.tmpl
@@ -74,7 +74,7 @@ func renderIndex(tmpl *template.Template, skills []*skill.Skill, outputDir strin
 	sort.Slice(cards, func(i, j int) bool { return cards[i].Name < cards[j].Name })
 
 	data := indexPageData{
-		Title:   "Skillstore",
+		Title:   "Skill Indexer",
 		Version: Version,
 		Skills:  cards,
 	}

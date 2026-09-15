@@ -1,4 +1,4 @@
-# skillstore
+# skill-indexer
 
 A static site generator for a "skill marketplace": point it at a directory of
 [Claude Code skills](https://docs.claude.com/), each with a `SKILL.md`
@@ -10,11 +10,11 @@ host the output; only the `npx` install step touches the network.
 ## Quickstart
 
 ```bash
-go build -o skillstore .
-./skillstore --skill-dir examples/skills --output-dir public
+go build -o skill-indexer .
+./skill-indexer --skill-dir examples/skills --output-dir public
 ```
 
-This scans `examples/skills/` (33 real skills ship in this repo as
+This scans `examples/skills/` (6 real skills ship in this repo as
 sample/fixture data — see [examples/README.md](examples/README.md)),
 skipping and warning on any directory missing a valid `SKILL.md`, and writes
 the generated site to `public/`. Serve it with any static file server, e.g.:
@@ -31,10 +31,10 @@ the root `Dockerfile` for a containerized build of the CLI itself.
 ## CLI
 
 ```text
-skillstore [flags]
+skill-indexer [flags]
 
 Flags:
-  -h, --help                help for skillstore
+  -h, --help                help for skill-indexer
       --output-dir string   directory to write the generated static site into (default "public")
       --skill-dir string    directory containing skill subdirectories to scan (default "skills")
 ```

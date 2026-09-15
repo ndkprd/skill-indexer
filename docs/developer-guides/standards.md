@@ -1,6 +1,6 @@
 ---
 title: Standards
-description: Code style, logging conventions, and git workflow for Skillstore.
+description: Code style, logging conventions, and git workflow for Skill Indexer.
 tags: [developer-guide, standards]
 ---
 

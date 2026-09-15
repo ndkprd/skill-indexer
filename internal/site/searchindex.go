@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"skillstore/internal/skill"
+	"skill-indexer/internal/skill"
 )
 
 // searchEntry is one row of the client-side search index. DirName lets the
