@@ -1,0 +1,46 @@
+{{define "content"}}
+<a class="back-link" href="/">&larr; All skills</a>
+
+<article class="detail">
+  <header class="detail-header">
+    <h1 class="detail-name">{{.Skill.Name}}</h1>
+    <p class="detail-dirname">{{.Skill.DirName}}</p>
+    <p class="detail-description">{{.Skill.Description}}</p>
+  </header>
+
+  <div class="detail-layout">
+    <div class="detail-content">
+      {{if .Skill.Metadata}}
+      <section class="metadata" aria-label="Skill metadata">
+        <table class="metadata-table">
+          <tbody>
+            {{range .Skill.Metadata}}
+            <tr>
+              <th scope="row">{{.Key}}</th>
+              <td>{{.Value}}</td>
+            </tr>
+            {{end}}
+          </tbody>
+        </table>
+      </section>
+      {{end}}
+
+      <section class="detail-body">
+        {{.Skill.BodyHTML}}
+      </section>
+    </div>
+
+    <aside class="action-panel" aria-label="Install this skill">
+      <a class="button button-primary" href="{{.Skill.ZipPath}}" download>Download .zip</a>
+
+      <div class="install-block">
+        <p class="install-label">Install with npx</p>
+        <div class="install-command-row">
+          <pre id="install-cmd" class="install-cmd" data-zip-path="{{.Skill.ZipPath}}">npx skill-repo-store-install {{.Skill.ZipPath}} --dest ./skills</pre>
+          <button id="copy-cmd" class="button button-ghost copy-button" type="button" aria-label="Copy install command">Copy</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+</article>
+{{end}}
