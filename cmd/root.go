@@ -28,8 +28,8 @@ var rootCmd = &cobra.Command{
 	Use:   "skillstore",
 	Short: "Generate a static skill marketplace site from a directory of Claude Code skills",
 	Long: "skillstore scans a directory of Claude Code skills, each with a SKILL.md\n" +
-		"file, and generates a static, searchable marketplace site: a card grid, a\n" +
-		"detail page per skill, zip downloads, and npx install commands.",
+		"file, and generates a static, searchable marketplace site: a card grid\n" +
+		"with a slide-in detail panel, zip downloads, and npx install commands.",
 	RunE: runGenerate,
 }
 

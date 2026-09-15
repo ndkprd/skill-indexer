@@ -30,7 +30,7 @@ itself.
 
 ## CLI
 
-```
+```text
 skillstore [flags]
 
 Flags:
@@ -48,7 +48,7 @@ rendered SKILL.md body is not shown anywhere in the UI — the frontmatter
 
 ## Output layout
 
-```
+```text
 public/
   index.html              the single page: header, card grid, detail panel
   downloads/<name>.zip    each skill's full directory, zipped
@@ -87,6 +87,12 @@ A Project/Global toggle next to the command switches `--dest` between
 `./skills` and `~/.claude/skills` (shell tilde expansion handles the rest —
 no code on the installer's side needs to know the difference).
 
+> **Note:** this requires `skillstore-install` to actually be published to
+> the npm registry — it is **not**, as of this writing (see
+> [installer/README.md](installer/README.md#publishing)). Until it is,
+> this command will fail with a "package not found" error; the
+> **Download .zip** button is the reliable install path.
+
 The `installer/` directory is that standalone npm package
 (`skillstore-install`). It fetches a zip by URL and extracts it into
 `--dest` (default `./skills`). See [installer/README.md](installer/README.md)
@@ -111,7 +117,7 @@ bun test      # or npm test
 
 ### Project layout
 
-```
+```text
 cmd/               Cobra CLI wiring (root command, flags, pipeline orchestration)
 internal/skill/    SKILL.md frontmatter parsing + directory scanning
 internal/site/     HTML rendering (html/template + go:embed), zip archiving,

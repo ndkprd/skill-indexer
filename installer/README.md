@@ -36,3 +36,13 @@ bun test      # or npm test / node --test index.test.js
 separate from the CLI/argv-parsing wrapper, so it can be tested directly
 without spawning a subprocess. See `index.test.js` for examples, including a
 local `http` fixture server.
+
+## Publishing
+
+This package has **not** been published to the npm registry yet. Every
+Skillstore site's `npx skillstore-install ...` command assumes it has
+been — until someone runs `npm publish` from this directory (after
+reviewing `package.json`'s name, version, and license), that command will
+fail with a "package not found" error for anyone who tries it. Publishing
+was explicitly deferred as a follow-up when this package was first built,
+not forgotten.

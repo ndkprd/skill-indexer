@@ -40,7 +40,7 @@
   <main class="site-main">
     <p id="load-error" class="load-error" hidden>Could not load skill data — search and details are unavailable. Try reloading the page.</p>
     <p id="no-results" class="no-results" hidden></p>
-    <div id="card-grid" class="card-grid" data-total="{{len .Skills}}">
+    <div id="card-grid" class="card-grid">
       {{range .Skills}}
       <a class="card" href="#{{.DirName}}" data-skill="{{.DirName}}">
         <div class="card-head">
