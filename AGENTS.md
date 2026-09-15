@@ -54,28 +54,46 @@ cd installer && bun install && bun test
 - **`internal/site`** owns everything about turning `[]*skill.Skill` into
   the static site: HTML rendering (`render.go`), zip archiving (`zip.go`),
   and the search index (`searchindex.go`).
+  - There is exactly **one** rendered page (`templates/index.html.tmpl`) —
+    no per-skill pages. Skill detail lives entirely client-side, in a
+    slide-in panel populated from `search-index.json` (see `app.js`). Don't
+    reintroduce a `skills/<name>.html` template without removing this again;
+    `search-index.json`'s `zipPath`/`metadata` fields exist specifically so
+    the panel never needs a second fetch or a server route per skill.
   - Zip entries are prefixed with the skill's `DirName` (e.g.
     `vue/SKILL.md`) so extraction reproduces the `--skill-dir` layout — see
     the plan's FAQ for why this matters to the installer.
-  - The index and detail page templates are parsed as **two separate**
-    `*template.Template` sets (each paired with `layout.html.tmpl`), because
-    both define a `content` block under the same name. Parsing them
-    together would let one silently clobber the other — don't merge them
-    into a single `ParseFS` call without fixing that first.
   - Card badges use a fixed priority order (`version` → `author` →
     `license` → `compatibility` → first remaining key alphabetically),
-    capped at 2. The full metadata table on a detail page shows every key,
-    sorted alphabetically for deterministic output.
+    capped at 2. The panel's metadata table shows every key, sorted
+    alphabetically client-side (`app.js`'s `formatMetadataValue` mirrors
+    `render.go`'s Go-side equivalent — keep both in sync if the format
+    logic changes).
+  - The `SKILL.md` body is parsed into `Skill.Body` but deliberately never
+    rendered anywhere in the UI — the frontmatter `description` is
+    considered sufficient. Don't re-add a markdown-to-HTML render step
+    without confirming that's actually wanted again.
 - **Assets are vendored, not CDN-loaded** (except the two Google Fonts
   requests for IBM Plex Sans/Mono, which degrade to the system-font fallback
   stack if unreachable). `internal/site/assets/fuse.min.js` is a vendored
   build, not a runtime `<script src="https://.../fuse.js">` — if it needs
   updating, re-download it and replace the file in place.
-- **Design system**: follow `DESIGN.md` (restrained color strategy, one
-  indigo/blue accent, flat-by-default elevation with feedback-only hover
-  states, `prefers-reduced-motion` respected everywhere). Its Do's/Don'ts
-  section is normative for any new UI work in `internal/site/templates` or
-  `internal/site/assets`.
+- **Theming**: light is the restrained indigo/blue system from `DESIGN.md`;
+  dark is Nord (`https://www.nordtheme.com/`) — Polar Night surfaces, Snow
+  Storm text, Frost accent — applied via `:root[data-theme="dark"]` and
+  mirrored under `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { ... } }`
+  so an explicit choice (persisted to `localStorage`, toggled in the header)
+  always wins over the OS default. Keep both blocks' variable sets
+  identical when adding new tokens. An inline `<script>` at the top of
+  `<head>` applies any stored `data-theme` before first paint to avoid a
+  flash of the wrong theme — don't move theme-affecting CSS above that
+  script's effect, and don't remove the script assuming the FOUC doesn't
+  matter.
+- **Design system**: follow `DESIGN.md` (flat-by-default elevation with
+  feedback-only hover states, `prefers-reduced-motion` respected
+  everywhere, focus trapping + `inert` on background content while the
+  panel is open). Its Do's/Don'ts section is normative for any new UI work
+  in `internal/site/templates` or `internal/site/assets`.
 
 ## Git workflow
 

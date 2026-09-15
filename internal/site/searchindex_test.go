@@ -27,8 +27,9 @@ func TestBuildSearchIndex(t *testing.T) {
 	}
 
 	for i, s := range skills {
-		if entries[i].Name != s.Name || entries[i].DirName != s.DirName {
-			t.Errorf("entry %d = %+v, want name=%q dirName=%q", i, entries[i], s.Name, s.DirName)
+		wantZipPath := "/downloads/" + s.DirName + ".zip"
+		if entries[i].Name != s.Name || entries[i].DirName != s.DirName || entries[i].ZipPath != wantZipPath {
+			t.Errorf("entry %d = %+v, want name=%q dirName=%q zipPath=%q", i, entries[i], s.Name, s.DirName, wantZipPath)
 		}
 	}
 }

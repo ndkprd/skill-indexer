@@ -2,10 +2,10 @@
 
 A static site generator for a "skill marketplace": point it at a directory of
 [Claude Code skills](https://docs.claude.com/), each with a `SKILL.md`
-frontmatter file, and it produces a searchable, browsable static site —
-card grid, per-skill detail pages, zip downloads, and copy-paste `npx`
-install commands. No backend required to host the output; only the `npx`
-install step touches the network.
+frontmatter file, and it produces a searchable, browsable static site — a
+card grid with a slide-in detail panel, zip downloads, copy-paste `npx`
+install commands, and a Nord-based dark mode toggle. No backend required to
+host the output; only the `npx` install step touches the network.
 
 ## Quickstart
 
@@ -37,27 +37,42 @@ Flags:
 Each subdirectory of `--skill-dir` must contain a `SKILL.md` with YAML
 frontmatter (`name` and `description` are required; everything else —
 `metadata`, `license`, `compatibility`, `version`, `author`, ... — is folded
-into a free-form metadata map and shown on the skill's detail page).
+into a free-form metadata map and shown in the skill's detail panel). The
+rendered SKILL.md body is not shown anywhere in the UI — the frontmatter
+`description` is the only prose surfaced to visitors, by design.
 
 ## Output layout
 
 ```
 public/
-  index.html              card grid + search
-  skills/<name>.html      one detail page per skill
-  downloads/<name>.zip    the skill's full directory, zipped
-  search-index.json       client-side search index (Fuse.js)
+  index.html              the single page: header, card grid, detail panel
+  downloads/<name>.zip    each skill's full directory, zipped
+  search-index.json       drives both client-side search and the detail
+                           panel (Fuse.js reads it; so does app.js)
   assets/                 style.css, app.js, vendored fuse.min.js
 ```
+
+There are no per-skill HTML pages. Clicking a card opens a slide-in panel
+(populated client-side from `search-index.json`) rather than navigating
+away; the panel is deep-linkable via `#<skill-name>` in the URL and closes
+on Escape, backdrop click, or browser back.
 
 Each zip's entries are prefixed with the skill's own directory name (e.g.
 `vue/SKILL.md`, `vue/references/foo.md`), so extracting it under
 `--dest ./skills` reproduces the same `./skills/<name>/...` layout the
 generator itself expects as input.
 
+## Dark mode
+
+A theme toggle in the header switches between the default light theme and a
+[Nord](https://www.nordtheme.com/)-based dark theme. The choice persists via
+`localStorage`; absent an explicit choice, the site follows the OS's
+`prefers-color-scheme`. All theming is pure CSS custom properties in
+`internal/site/assets/style.css` — no separate dark asset build.
+
 ## Installing a skill via npx
 
-Every skill detail page shows a command like:
+Every skill's detail panel shows a command like:
 
 ```bash
 npx skill-repo-store-install https://your-site.example/downloads/vue.zip --dest ./skills

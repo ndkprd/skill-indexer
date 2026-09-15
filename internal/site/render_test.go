@@ -44,14 +44,16 @@ func TestRender(t *testing.T) {
 		if !strings.Contains(indexHTML, s.Name) {
 			t.Errorf("index.html missing skill name %q", s.Name)
 		}
+		if !strings.Contains(indexHTML, `href="#`+s.DirName+`"`) {
+			t.Errorf("index.html missing panel-trigger link for %q", s.DirName)
+		}
 	}
 
-	for _, s := range skills {
-		detailPath := filepath.Join(outDir, "skills", s.DirName+".html")
-		detailHTML := readFile(t, detailPath)
-		if !strings.Contains(detailHTML, s.Name) {
-			t.Errorf("%s missing skill name %q", detailPath, s.Name)
-		}
+	if !strings.Contains(indexHTML, `id="skill-panel"`) {
+		t.Error("index.html missing the detail panel skeleton")
+	}
+	if !strings.Contains(indexHTML, `id="theme-toggle"`) {
+		t.Error("index.html missing the theme toggle button")
 	}
 
 	for _, asset := range []string{"style.css", "app.js", "fuse.min.js"} {

@@ -1,7 +1,6 @@
 package site
 
 import (
-	"bytes"
 	"embed"
 	"fmt"
 	"html/template"
@@ -10,9 +9,6 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
-
-	"github.com/yuin/goldmark"
-	"github.com/yuin/goldmark/extension"
 
 	"skill-repo-store/internal/skill"
 )
@@ -30,13 +26,6 @@ var cardBadgePriority = []string{"version", "author", "license", "compatibility"
 // maxCardBadges caps how many metadata badges a card shows at a glance.
 const maxCardBadges = 2
 
-var markdown = goldmark.New(goldmark.WithExtensions(extension.GFM))
-
-// basePage carries fields every rendered page needs.
-type basePage struct {
-	Title string
-}
-
 type badge struct {
 	Key   string
 	Value string
@@ -50,45 +39,21 @@ type cardView struct {
 }
 
 type indexPageData struct {
-	basePage
+	Title  string
 	Skills []cardView
 }
 
-type detailView struct {
-	Name        string
-	DirName     string
-	Description string
-	BodyHTML    template.HTML
-	Metadata    []badge
-	ZipPath     string
-}
-
-type detailPageData struct {
-	basePage
-	Skill detailView
-}
-
-// Render writes the full static site (index page, one detail page per
-// skill, and the vendored static assets) under outputDir.
-//
-// The index and detail pages are parsed as two separate template sets
-// (each paired with the shared layout) because both define a "content"
-// block under the same name; parsing them together would let one
-// silently override the other.
+// Render writes the single-page static site (card grid plus its vendored
+// static assets) under outputDir. Skill detail is not rendered to separate
+// pages: it's populated client-side, in a slide-in panel, from
+// search-index.json (see BuildSearchIndex).
 func Render(skills []*skill.Skill, outputDir string) error {
-	indexTmpl, err := template.ParseFS(templatesFS, "templates/layout.html.tmpl", "templates/index.html.tmpl")
+	tmpl, err := template.ParseFS(templatesFS, "templates/index.html.tmpl")
 	if err != nil {
 		return fmt.Errorf("parse index template: %w", err)
 	}
-	skillTmpl, err := template.ParseFS(templatesFS, "templates/layout.html.tmpl", "templates/skill.html.tmpl")
-	if err != nil {
-		return fmt.Errorf("parse skill template: %w", err)
-	}
 
-	if err := renderIndex(indexTmpl, skills, outputDir); err != nil {
-		return err
-	}
-	if err := renderDetailPages(skillTmpl, skills, outputDir); err != nil {
+	if err := renderIndex(tmpl, skills, outputDir); err != nil {
 		return err
 	}
 	if err := writeAssets(outputDir); err != nil {
@@ -105,38 +70,11 @@ func renderIndex(tmpl *template.Template, skills []*skill.Skill, outputDir strin
 	sort.Slice(cards, func(i, j int) bool { return cards[i].Name < cards[j].Name })
 
 	data := indexPageData{
-		basePage: basePage{Title: "Skill Repo Store"},
-		Skills:   cards,
-	}
-	return renderToFile(tmpl, filepath.Join(outputDir, "index.html"), data)
-}
-
-func renderDetailPages(tmpl *template.Template, skills []*skill.Skill, outputDir string) error {
-	skillsDir := filepath.Join(outputDir, "skills")
-	if err := os.MkdirAll(skillsDir, 0o755); err != nil {
-		return fmt.Errorf("create skills output dir: %w", err)
+		Title:  "Skill Repo Store",
+		Skills: cards,
 	}
 
-	for _, s := range skills {
-		view, err := buildDetailView(s)
-		if err != nil {
-			return fmt.Errorf("render skill %q: %w", s.DirName, err)
-		}
-		data := detailPageData{
-			basePage: basePage{Title: view.Name + " · Skill Repo Store"},
-			Skill:    view,
-		}
-		outPath := filepath.Join(skillsDir, s.DirName+".html")
-		if err := renderToFile(tmpl, outPath, data); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// renderToFile executes the "layout" template (which pulls in the page's
-// own "content" block) and writes the result to outPath.
-func renderToFile(tmpl *template.Template, outPath string, data any) error {
+	outPath := filepath.Join(outputDir, "index.html")
 	if err := os.MkdirAll(filepath.Dir(outPath), 0o755); err != nil {
 		return fmt.Errorf("create output dir for %s: %w", outPath, err)
 	}
@@ -146,8 +84,8 @@ func renderToFile(tmpl *template.Template, outPath string, data any) error {
 	}
 	defer f.Close()
 
-	if err := tmpl.ExecuteTemplate(f, "layout", data); err != nil {
-		return fmt.Errorf("execute layout template for %s: %w", outPath, err)
+	if err := tmpl.Execute(f, data); err != nil {
+		return fmt.Errorf("execute index template: %w", err)
 	}
 	return nil
 }
@@ -193,30 +131,6 @@ func buildCardView(s *skill.Skill) cardView {
 	}
 }
 
-func buildDetailView(s *skill.Skill) (detailView, error) {
-	bodyHTML, err := renderMarkdown(s.Body)
-	if err != nil {
-		return detailView{}, err
-	}
-
-	return detailView{
-		Name:        s.Name,
-		DirName:     s.DirName,
-		Description: s.Description,
-		BodyHTML:    bodyHTML,
-		Metadata:    sortedMetadata(s.Metadata),
-		ZipPath:     "/downloads/" + s.DirName + ".zip",
-	}, nil
-}
-
-func renderMarkdown(body string) (template.HTML, error) {
-	var buf bytes.Buffer
-	if err := markdown.Convert([]byte(body), &buf); err != nil {
-		return "", fmt.Errorf("render markdown body: %w", err)
-	}
-	return template.HTML(buf.String()), nil
-}
-
 // pickBadges selects up to max metadata entries for compact display,
 // preferring keys in priority order and falling back to the first
 // remaining key alphabetically.
@@ -252,17 +166,6 @@ func pickBadges(metadata map[string]any, priority []string, max int) []badge {
 		}
 	}
 
-	return badges
-}
-
-// sortedMetadata returns every metadata entry as a badge, ordered
-// alphabetically by key for deterministic rendering.
-func sortedMetadata(metadata map[string]any) []badge {
-	keys := sortedKeys(metadata)
-	badges := make([]badge, len(keys))
-	for i, k := range keys {
-		badges[i] = badge{Key: k, Value: formatMetadataValue(metadata[k])}
-	}
 	return badges
 }
 
