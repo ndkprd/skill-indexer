@@ -137,7 +137,7 @@ passing project-wide.
 ## Tasks
 
 ### Task 1: Scaffold Go module, Cobra root command, and shared Skill type
-- **Status**: pending
+- **Status**: done
 - **Date**: 2026-09-15
 - **Related file**: `go.mod`, `main.go`, `cmd/root.go`, `internal/skill/skill.go`
 - **Objective**: Initialize the Go module (`go mod init skill-repo-store`), add a
@@ -154,7 +154,7 @@ passing project-wide.
   both `--skill-dir` and `--output-dir` flags with the correct default values shown.
 
 ### Task 2: Implement skill frontmatter parser (depends on Task 1)
-- **Status**: pending
+- **Status**: done
 - **Date**: 2026-09-15
 - **Related file**: `internal/skill/parse.go`, `internal/skill/parse_test.go`
 - **Objective**: Implement `ParseFrontmatter(path string) (*skill.Skill, error)` that
@@ -179,7 +179,7 @@ passing project-wide.
   that must return a non-nil error.
 
 ### Task 3: Implement skill directory scanner (depends on Task 1, Task 2)
-- **Status**: pending
+- **Status**: done
 - **Date**: 2026-09-15
 - **Related file**: `internal/skill/scan.go`, `internal/skill/scan_test.go`
 - **Objective**: Implement `ScanDir(root string) (skills []*skill.Skill, warnings
@@ -194,7 +194,7 @@ passing project-wide.
   it is skipped with exactly one warning.
 
 ### Task 4: Implement HTML templates and site renderer (depends on Task 1)
-- **Status**: pending
+- **Status**: done
 - **Date**: 2026-09-15
 - **Related file**: `internal/site/render.go`, `internal/site/templates/layout.html.tmpl`,
   `internal/site/templates/index.html.tmpl`, `internal/site/templates/skill.html.tmpl`
@@ -212,7 +212,7 @@ passing project-wide.
   the fixture skills' names via `strings.Contains`.
 
 ### Task 5: Implement per-skill zip downloads (depends on Task 1)
-- **Status**: pending
+- **Status**: done
 - **Date**: 2026-09-15
 - **Related file**: `internal/site/zip.go`, `internal/site/zip_test.go`
 - **Objective**: Implement `ZipSkillDir(s *skill.Skill, destZipPath string) error`
@@ -228,7 +228,7 @@ passing project-wide.
   `vue/references/*.md` entry (not bare `SKILL.md` at the archive root).
 
 ### Task 6: Implement client-side search (depends on Task 1, Task 4)
-- **Status**: pending
+- **Status**: done
 - **Date**: 2026-09-15
 - **Related file**: `internal/site/searchindex.go`, `internal/site/assets/fuse.min.js`,
   `internal/site/assets/app.js`, `internal/site/templates/index.html.tmpl`
@@ -244,7 +244,7 @@ passing project-wide.
   `jq '.[0] | has("name")'` is `true`.
 
 ### Task 7: Implement install command UI on skill detail pages (depends on Task 4)
-- **Status**: pending
+- **Status**: done
 - **Date**: 2026-09-15
 - **Related file**: `internal/site/templates/skill.html.tmpl`, `internal/site/assets/app.js`
 - **Objective**: On each skill detail page, render a `<pre id="install-cmd">`
@@ -256,7 +256,7 @@ passing project-wide.
   public/assets/app.js` succeeds.
 
 ### Task 8: Build the npx installer package (depends on Task 1)
-- **Status**: pending
+- **Status**: done
 - **Date**: 2026-09-15
 - **Related file**: `installer/package.json`, `installer/index.js`, `installer/index.test.js`
 - **Objective**: Create a standalone Node package named `skill-repo-store-install`
@@ -270,7 +270,7 @@ passing project-wide.
   asserts the expected files exist under a `t`-managed temp `--dest`.
 
 ### Task 9: Wire end-to-end generate flow (depends on Tasks 2, 3, 4, 5, 6, 7)
-- **Status**: pending
+- **Status**: done
 - **Date**: 2026-09-15
 - **Related file**: `cmd/root.go`
 - **Objective**: Replace the Task 1 stub in `cmd/root.go`'s `RunE` with the full
