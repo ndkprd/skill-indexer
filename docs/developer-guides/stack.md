@@ -36,13 +36,8 @@ already-published, actively maintained third-party CLI for the open agent
 skills ecosystem, not anything this project builds or ships. It supports
 installing directly from a zip download URL, which is exactly what
 `/downloads/<name>.zip` is, so no custom installer package is needed.
-Requires Node.js 22.20+ on whoever runs the install command.
-
-This project used to ship its own `installer/skillstore-install` npm
-package (from when this project was still called "Skillstore") doing the
-same job. It was deleted once `skills` was confirmed to
-support zip-URL installs — maintaining and publishing our own package
-added nothing `skills` didn't already do. See [Pitfalls](./pitfalls.md).
+Requires Node.js 22.20+ on whoever runs the install command. See
+[Pitfalls](./pitfalls.md) for the specifics worth knowing about it.
 
 ## Related
 

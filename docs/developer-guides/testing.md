@@ -29,11 +29,8 @@ uses in-memory fixtures or reads real files from `examples/skills/`.
 
 `scan_test.go`'s "real fixture directory" case counts `examples/skills/`'s
 own subdirectories and asserts `ScanDir` returns that many skills, rather
-than asserting a literal number. The fixture set has already changed size
-twice (46 → 33, when the ASDP-internal skills were dropped from the public
-example set; then 33 → 6, trimming further) and would have silently broken
-a hardcoded assertion each time. If you add or remove a fixture skill,
-this particular test keeps passing without an edit — but see
+than asserting a literal number. That way, adding or removing a fixture
+skill doesn't require a matching edit to this test — but see
 [Pitfalls](./pitfalls.md) and `AGENTS.md`: the _named_ fixtures other
 tests reference aren't self-adjusting the same way.
 

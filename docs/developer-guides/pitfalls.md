@@ -14,11 +14,10 @@ deliberate — plus a couple of real footguns.
 `internal/site/templates/index.html.tmpl` is the only template. There are
 **no per-skill HTML pages**. Skill detail is populated entirely
 client-side, from `search-index.json`, into a slide-in panel (`app.js`).
-This was a deliberate architecture change (an earlier version rendered a
-`skills/<name>.html` per skill) — don't reintroduce that without removing
-this design again. `search-index.json`'s `zipPath` and `metadata` fields
-exist specifically so the panel never needs a second fetch or a
-server-side route per skill.
+`search-index.json`'s `zipPath` and `metadata` fields exist specifically
+so the panel never needs a second fetch or a server-side route per skill
+— don't add a `skills/<name>.html` template without removing this design
+first.
 
 ## Zip entries are prefixed with the skill's directory name
 
@@ -67,11 +66,11 @@ and the same field's row in its detail panel will disagree.
 ## The `SKILL.md` body is parsed but never rendered
 
 `Skill.Body` is populated by `ParseFrontmatter` and then never used
-anywhere in `internal/site`. This was also a deliberate removal (an
-earlier version rendered it as sanitized Markdown via `goldmark` on the
-detail page) — the frontmatter `description` is considered sufficient.
-Don't re-add a Markdown render step without confirming that's actually
-wanted again; the `goldmark` dependency was removed along with it.
+anywhere in `internal/site` — the frontmatter `description` is considered
+sufficient on its own. Don't add a Markdown render step for it without
+confirming that's actually wanted; there's no `goldmark`-style dependency
+in `go.mod` to reach for, so adding one back is a real decision, not a
+revert.
 
 ## A skill directory missing `SKILL.md` never fails the whole run
 
@@ -99,22 +98,16 @@ project builds and ships nothing to make that command work — it relies on
 `skills` continuing to support installing directly from a zip download URL
 and continuing to accept `-a`/`-y`/`-g` the way it does today. If that
 package's behavior changes incompatibly, the fix is in `app.js`'s command
-string, not in any Go code. A previous version of this project shipped its
-own `installer/skillstore-install` npm package (from when this project
-was still called "Skillstore") doing the same job by hand — fetch a URL,
-extract a zip — it was deleted in favor of `skills` once
-zip-URL support was confirmed, since maintaining and publishing a package
-of our own added nothing `skills` didn't already do. Don't reintroduce a
-bundled installer without a concrete reason `skills` stopped working.
+string, not in any Go code. Don't reach for a bundled installer package as
+the fix without confirming `skills` actually stopped working.
 
-Two behavior differences from the deleted installer, worth knowing:
+Two things worth knowing about `skills` itself:
 
-- `skills` requires **Node.js 22.20+**, not the 18+ our own installer
-  targeted.
-- `skills`' project-scope default is `./.claude/skills/<name>/` (agent-
+- It requires **Node.js 22.20+**.
+- Its project-scope default is `./.claude/skills/<name>/` (agent-
   namespaced), not the bare `./skills/<name>/` this project's own
   `--skill-dir` default uses. Its global scope (`~/.claude/skills/`)
-  happens to already match ours exactly.
+  matches ours exactly.
 
 ## The install command's URL is computed in the browser, not baked in
 
@@ -124,19 +117,19 @@ never needs one. If you're debugging a "wrong URL" report, the cause is
 almost always how the site is being _served_ (a proxy rewriting the
 origin, or the page opened via `file://`), not the generator.
 
-## `examples/skills/` fixture churn breaks tests silently unless you check
+## Named test fixtures don't self-adjust if `examples/skills/` changes
 
 `internal/skill/scan_test.go`'s skill-count assertion reads
 `examples/skills/`'s own directory listing rather than a hardcoded number
-(see [Testing](./testing.md)), so it survives the fixture set changing
-size — it already has, twice. But `parse_test.go` and `zip_test.go`
-reference specific _named_ skills to test specific frontmatter shapes
-(a nested `metadata:` map, a minimal skill, a `references/` subdirectory,
-...) — those aren't self-adjusting. If a skill those tests depend on gets
-removed from `examples/skills/`, the tests fail with a plain "no such file
-or directory", not a helpful message pointing at the real cause. If you
-prune `examples/skills/`, run `go test ./...` afterward and expect to
-pick new named fixtures for whatever shape each failing subtest needs.
+(see [Testing](./testing.md)), so it tolerates the fixture set changing
+size. But `parse_test.go` and `zip_test.go` reference specific _named_
+skills to test specific frontmatter shapes (a nested `metadata:` map, a
+minimal skill, a `references/` subdirectory, ...) — those aren't
+self-adjusting. If a skill those tests depend on is ever removed from
+`examples/skills/`, the tests fail with a plain "no such file or
+directory", not a helpful message pointing at the real cause. If you
+prune `examples/skills/`, run `go test ./...` afterward and pick new
+named fixtures for whatever shape each failing subtest needs.
 
 ## Related
 

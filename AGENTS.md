@@ -26,19 +26,17 @@ Run the generator against the real fixtures to sanity-check end to end:
 go run . --skill-dir examples/skills --output-dir public
 ```
 
-Sample skills live at `examples/skills/` (not `skills/` at the repo root —
-they were moved there to sit alongside the `examples/.gitlab-ci.yml` and
-`examples/README.md` quickstarts). All test fixture paths in
-`internal/skill/*_test.go` and `internal/site/zip_test.go` point at
-`../../examples/skills/...` accordingly. This set has already been pruned
-twice (46 → 33, dropping ASDP-internal skills; then 33 → 6, trimming
-further) — `internal/skill/scan_test.go`'s count assertion reads the
-directory itself rather than hardcoding a number, so it survives that. The
-_named_ fixtures other tests reference (`parse_test.go`'s specific skills
-for each frontmatter shape, `zip_test.go`'s skill with a `references/`
-subdirectory) are **not** self-adjusting the same way — if you prune
-`examples/skills/` again, check those tests still point at skills that
-exist and still have the shape each subtest needs.
+Sample skills live at `examples/skills/`, alongside the
+`examples/.gitlab-ci.yml` and `examples/README.md` quickstarts. All test
+fixture paths in `internal/skill/*_test.go` and `internal/site/zip_test.go`
+point at `../../examples/skills/...`. `internal/skill/scan_test.go`'s count
+assertion reads the directory itself rather than hardcoding a number, so
+it tolerates the fixture set changing size. The _named_ fixtures other
+tests reference (`parse_test.go`'s specific skills for each frontmatter
+shape, `zip_test.go`'s skill with a `references/` subdirectory) are
+**not** self-adjusting the same way — if you prune `examples/skills/`,
+check those tests still point at skills that exist and still have the
+shape each subtest needs.
 
 ## Conventions
 
@@ -83,16 +81,12 @@ exist and still have the shape each subtest needs.
   - The install command (`app.js`'s `updateInstallCommand`) shells out to
     `npx skills add <zip-url> -a claude-code -y[-g]` — the third-party
     [`vercel-labs/skills`](https://github.com/vercel-labs/skills) CLI, not
-    a package this project ships. There used to be a custom
-    `installer/skillstore-install` Node package doing the same job (from
-    when this project was still called "Skillstore"); it was
-    deleted once `skills` was confirmed to support installing directly
-    from a zip download URL, since that meant no unpublished package of
-    our own was needed. `skills` requires Node.js 22.20+, and its
-    project-scope default is `./.claude/skills/<name>/`, not the bare
-    `./skills/<name>/` this project's own `--skill-dir` default uses.
-    Don't reintroduce a bundled installer package without a real reason to
-    stop depending on `skills`.
+    a package this project ships or maintains. `skills` requires Node.js
+    22.20+, and its project-scope default is `./.claude/skills/<name>/`,
+    not the bare `./skills/<name>/` this project's own `--skill-dir`
+    default uses. If you're tempted to bundle a custom installer instead,
+    check `skills` actually stopped working first — see
+    [Pitfalls](docs/developer-guides/pitfalls.md).
 - **Assets are vendored, not CDN-loaded** (except the two Google Fonts
   requests for IBM Plex Sans/Mono, which degrade to the system-font fallback
   stack if unreachable). `internal/site/assets/fuse.min.js` is a vendored

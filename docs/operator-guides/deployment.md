@@ -136,12 +136,9 @@ Every generated site shows an `npx skills add <zip-url> ...` command as
 one of two ways to get a skill. `skills` is
 [`vercel-labs/skills`](https://github.com/vercel-labs/skills) — an
 already-published, actively maintained third-party CLI, not anything this
-project ships. Nothing needs to be published or configured by you for this
-to work, unlike an earlier version of this project that shipped its own
-unpublished `installer/skillstore-install` package (from when this
-project was still called "Skillstore"). The only real
-precondition is the visitor's own environment: `skills` requires Node.js
-22.20+.
+project ships. Nothing needs to be published or configured by you for
+this to work. The only real precondition is the visitor's own
+environment: `skills` requires Node.js 22.20+.
 
 ## Site branding
 
