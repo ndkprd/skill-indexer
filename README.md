@@ -117,8 +117,6 @@ PRODUCT.md         strategic design context (users, purpose, anti-references)
 DESIGN.md          visual design system (colors, typography, components)
 ```
 
-See `AGENTS.md` for conventions to follow when working in this codebase.
-
 ## License
 
 [MIT](LICENSE)
