@@ -27,7 +27,7 @@ var cardBadgePriority = []string{"version", "author", "license", "compatibility"
 const maxCardBadges = 2
 
 // Version is shown in the generated site's footer trademark line.
-const Version = "0.1.0"
+const Version = "0.1.1"
 
 type badge struct {
 	Key   string
