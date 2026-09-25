@@ -117,6 +117,10 @@ shape each subtest needs.
   finishing an implementation is not itself approval to merge.
 - Prefer new commits over amending; don't rewrite history that's already
   been reported to the user as done.
+- Commit messages follow [Conventional Commits](https://www.conventionalcommits.org/)
+  (`<type>(<scope>): <description>`, e.g. `fix(docker): switch runtime image
+  to debian-slim`) — the changelog is generated from commit history via
+  git-cliff, which filters out non-conventional commits.
 
 ## Things to not reintroduce
 
