@@ -130,10 +130,16 @@ shape each subtest needs.
 - No CSS framework, no JS build step for the generated site — it's rendered
   entirely via `html/template` + `go:embed` so the generator stays one
   self-contained Go binary.
-- Don't add a `--base-path`-style prefix without checking — the generated
-  site currently uses root-relative URLs (`/downloads/...`, `/assets/...`,
-  `#<skill-name>` hashes) and assumes it's hosted at the domain root.
-- The `Dockerfile` builds and ships only the CLI binary (distroless,
+- The site supports being hosted under a subpath via `--base-url` (e.g.
+  `--base-url /marketplace`): it prefixes `index.html`'s asset/wordmark
+  refs (`indexPageData.BaseURL` in `render.go`), the `search-index.json`
+  fetch (`window.__BASE_URL__`, set inline in the template, read in
+  `app.js`), and each entry's `zipPath` (`BuildSearchIndex`'s `baseURL`
+  param in `searchindex.go`). Default `""` keeps the original
+  domain-root, root-relative behavior. `#<skill-name>` panel-routing
+  hashes are unaffected either way. Keep all these call sites in sync if
+  a new root-relative reference is added.
+- The `Dockerfile` builds and ships only the CLI binary (debian-slim,
   non-root) — it never bakes in a `skills/` directory or the generated
   site. Don't add either without a real reason; users mount their own
   skills dir and output dir as volumes.

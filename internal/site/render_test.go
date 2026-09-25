@@ -34,7 +34,7 @@ func TestRender(t *testing.T) {
 	skills := fixtureSkills()
 	outDir := t.TempDir()
 
-	if err := Render(skills, outDir); err != nil {
+	if err := Render(skills, outDir, ""); err != nil {
 		t.Fatalf("Render() error = %v", err)
 	}
 
@@ -59,6 +59,28 @@ func TestRender(t *testing.T) {
 	for _, asset := range []string{"style.css", "app.js", "fuse.min.js"} {
 		if _, err := os.Stat(filepath.Join(outDir, "assets", asset)); err != nil {
 			t.Errorf("expected asset %q to be written: %v", asset, err)
+		}
+	}
+}
+
+func TestRenderBaseURL(t *testing.T) {
+	skills := fixtureSkills()
+	outDir := t.TempDir()
+
+	if err := Render(skills, outDir, "/skills"); err != nil {
+		t.Fatalf("Render() error = %v", err)
+	}
+
+	indexHTML := readFile(t, filepath.Join(outDir, "index.html"))
+	for _, want := range []string{
+		`href="/skills/assets/style.css"`,
+		`src="/skills/assets/fuse.min.js"`,
+		`src="/skills/assets/app.js"`,
+		`href="/skills/"`,
+		`window.__BASE_URL__ = "/skills";`,
+	} {
+		if !strings.Contains(indexHTML, want) {
+			t.Errorf("index.html missing %q with baseURL set", want)
 		}
 	}
 }

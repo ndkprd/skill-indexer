@@ -21,14 +21,16 @@ type searchEntry struct {
 
 // BuildSearchIndex serializes skills into the JSON array consumed by the
 // client-side Fuse.js search and the detail panel on the index page.
-func BuildSearchIndex(skills []*skill.Skill) ([]byte, error) {
+// baseURL prefixes each entry's ZipPath so downloads resolve correctly when
+// the site is hosted under a subpath; pass "" to keep root-relative paths.
+func BuildSearchIndex(skills []*skill.Skill, baseURL string) ([]byte, error) {
 	entries := make([]searchEntry, len(skills))
 	for i, s := range skills {
 		entries[i] = searchEntry{
 			Name:        s.Name,
 			Description: s.Description,
 			DirName:     s.DirName,
-			ZipPath:     "/downloads/" + s.DirName + ".zip",
+			ZipPath:     baseURL + "/downloads/" + s.DirName + ".zip",
 			Metadata:    s.Metadata,
 		}
 	}

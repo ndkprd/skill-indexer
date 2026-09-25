@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/rs/zerolog"
@@ -17,6 +18,7 @@ import (
 var (
 	skillDir  string
 	outputDir string
+	baseURL   string
 )
 
 func newLogger() zerolog.Logger {
@@ -35,7 +37,8 @@ var rootCmd = &cobra.Command{
 
 func runGenerate(cmd *cobra.Command, args []string) error {
 	log := newLogger()
-	log.Info().Str("event", "generate_start").Str("skill_dir", skillDir).Str("output_dir", outputDir).Msg("starting generation")
+	base := normalizeBaseURL(baseURL)
+	log.Info().Str("event", "generate_start").Str("skill_dir", skillDir).Str("output_dir", outputDir).Str("base_url", base).Msg("starting generation")
 
 	if err := os.RemoveAll(outputDir); err != nil {
 		return fmt.Errorf("clear output dir %q: %w", outputDir, err)
@@ -50,7 +53,7 @@ func runGenerate(cmd *cobra.Command, args []string) error {
 	}
 	log.Info().Str("event", "skills_scanned").Int("valid_count", len(skills)).Int("skipped_count", len(warnings)).Msg("scanned skill directory")
 
-	if err := site.Render(skills, outputDir); err != nil {
+	if err := site.Render(skills, outputDir, base); err != nil {
 		return fmt.Errorf("render site: %w", err)
 	}
 
@@ -58,7 +61,7 @@ func runGenerate(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	if err := writeSearchIndex(skills, outputDir); err != nil {
+	if err := writeSearchIndex(skills, outputDir, base); err != nil {
 		return err
 	}
 
@@ -80,8 +83,8 @@ func writeDownloads(skills []*skill.Skill, outputDir string) error {
 	return nil
 }
 
-func writeSearchIndex(skills []*skill.Skill, outputDir string) error {
-	data, err := site.BuildSearchIndex(skills)
+func writeSearchIndex(skills []*skill.Skill, outputDir, baseURL string) error {
+	data, err := site.BuildSearchIndex(skills, baseURL)
 	if err != nil {
 		return fmt.Errorf("build search index: %w", err)
 	}
@@ -100,4 +103,19 @@ func Execute() error {
 func init() {
 	rootCmd.Flags().StringVar(&skillDir, "skill-dir", "skills", "directory containing skill subdirectories to scan")
 	rootCmd.Flags().StringVar(&outputDir, "output-dir", "public", "directory to write the generated static site into")
+	rootCmd.Flags().StringVar(&baseURL, "base-url", "", "path prefix to serve the generated site under (e.g. /skills), for hosting off the domain root")
+}
+
+// normalizeBaseURL strips a trailing slash and adds a leading one, so
+// "" stays "" (domain root, previous behavior) and both "docs" and
+// "/docs/" become "/docs".
+func normalizeBaseURL(s string) string {
+	s = strings.TrimSuffix(s, "/")
+	if s == "" {
+		return ""
+	}
+	if !strings.HasPrefix(s, "/") {
+		s = "/" + s
+	}
+	return s
 }

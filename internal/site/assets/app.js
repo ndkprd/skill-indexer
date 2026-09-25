@@ -370,7 +370,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     initTheme();
 
-    fetch("/search-index.json")
+    fetch((window.__BASE_URL__ || "") + "/search-index.json")
       .then(function (res) {
         if (!res.ok) throw new Error("search index request failed");
         return res.json();

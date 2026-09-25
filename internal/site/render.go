@@ -44,20 +44,24 @@ type cardView struct {
 type indexPageData struct {
 	Title   string
 	Version string
+	BaseURL string
 	Skills  []cardView
 }
 
 // Render writes the single-page static site (card grid plus its vendored
 // static assets) under outputDir. Skill detail is not rendered to separate
 // pages: it's populated client-side, in a slide-in panel, from
-// search-index.json (see BuildSearchIndex).
-func Render(skills []*skill.Skill, outputDir string) error {
+// search-index.json (see BuildSearchIndex). baseURL prefixes every
+// root-relative reference the page emits (assets, wordmark link) so the
+// site can be hosted under a subpath; pass "" to keep the previous
+// domain-root behavior.
+func Render(skills []*skill.Skill, outputDir, baseURL string) error {
 	tmpl, err := template.ParseFS(templatesFS, "templates/index.html.tmpl")
 	if err != nil {
 		return fmt.Errorf("parse index template: %w", err)
 	}
 
-	if err := renderIndex(tmpl, skills, outputDir); err != nil {
+	if err := renderIndex(tmpl, skills, outputDir, baseURL); err != nil {
 		return err
 	}
 	if err := writeAssets(outputDir); err != nil {
@@ -66,7 +70,7 @@ func Render(skills []*skill.Skill, outputDir string) error {
 	return nil
 }
 
-func renderIndex(tmpl *template.Template, skills []*skill.Skill, outputDir string) error {
+func renderIndex(tmpl *template.Template, skills []*skill.Skill, outputDir, baseURL string) error {
 	cards := make([]cardView, len(skills))
 	for i, s := range skills {
 		cards[i] = buildCardView(s)
@@ -76,6 +80,7 @@ func renderIndex(tmpl *template.Template, skills []*skill.Skill, outputDir strin
 	data := indexPageData{
 		Title:   "Skill Indexer",
 		Version: Version,
+		BaseURL: baseURL,
 		Skills:  cards,
 	}
 

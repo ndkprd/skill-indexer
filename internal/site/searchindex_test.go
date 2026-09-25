@@ -8,7 +8,7 @@ import (
 func TestBuildSearchIndex(t *testing.T) {
 	skills := fixtureSkills()
 
-	data, err := BuildSearchIndex(skills)
+	data, err := BuildSearchIndex(skills, "")
 	if err != nil {
 		t.Fatalf("BuildSearchIndex() error = %v", err)
 	}
@@ -30,6 +30,27 @@ func TestBuildSearchIndex(t *testing.T) {
 		wantZipPath := "/downloads/" + s.DirName + ".zip"
 		if entries[i].Name != s.Name || entries[i].DirName != s.DirName || entries[i].ZipPath != wantZipPath {
 			t.Errorf("entry %d = %+v, want name=%q dirName=%q zipPath=%q", i, entries[i], s.Name, s.DirName, wantZipPath)
+		}
+	}
+}
+
+func TestBuildSearchIndexBaseURL(t *testing.T) {
+	skills := fixtureSkills()
+
+	data, err := BuildSearchIndex(skills, "/skills")
+	if err != nil {
+		t.Fatalf("BuildSearchIndex() error = %v", err)
+	}
+
+	var entries []searchEntry
+	if err := json.Unmarshal(data, &entries); err != nil {
+		t.Fatalf("unmarshal search index: %v", err)
+	}
+
+	for i, s := range skills {
+		wantZipPath := "/skills/downloads/" + s.DirName + ".zip"
+		if entries[i].ZipPath != wantZipPath {
+			t.Errorf("entry %d zipPath = %q, want %q", i, entries[i].ZipPath, wantZipPath)
 		}
 	}
 }
