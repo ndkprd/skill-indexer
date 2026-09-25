@@ -1,3 +1,9 @@
+## [0.2.0] - 2026-09-26
+
+### Features
+
+- Add `--base-url` flag to serve the generated site under a subpath
+
 ## [0.1.2] - 2026-09-25
 
 ### Miscellaneous Tasks
