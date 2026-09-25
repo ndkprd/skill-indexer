@@ -23,9 +23,13 @@ RUN go mod download
 COPY . .
 RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags="-s -w" -o /out/skill-indexer .
 
-FROM gcr.io/distroless/static-debian12:nonroot
+FROM debian:trixie-slim
+
+RUN groupadd -r skillindexer && useradd -r -g skillindexer skillindexer
 
 COPY --from=build /out/skill-indexer /usr/local/bin/skill-indexer
+
+USER skillindexer
 
 ENTRYPOINT ["/usr/local/bin/skill-indexer"]
 CMD ["--help"]

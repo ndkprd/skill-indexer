@@ -11,7 +11,7 @@
 # fundamentals — the only hard requirements are a job literally named
 # `pages` and a `public/` artifact directory, both satisfied below.
 
-image: golang:1.27
+image: registry.gitlab.com/endekasoft/skill-indexer:latest
 
 stages:
   - deploy
@@ -19,8 +19,7 @@ stages:
 pages:
   stage: deploy
   script:
-    - go build -o skill-indexer .
-    - ./skill-indexer --skill-dir skills --output-dir public
+    - skill-indexer --skill-dir skills --output-dir public
   artifacts:
     paths:
       - public
