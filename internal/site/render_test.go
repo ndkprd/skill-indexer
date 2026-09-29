@@ -34,7 +34,7 @@ func TestRender(t *testing.T) {
 	skills := fixtureSkills()
 	outDir := t.TempDir()
 
-	if err := Render(skills, outDir, ""); err != nil {
+	if err := Render(skills, outDir, Options{}); err != nil {
 		t.Fatalf("Render() error = %v", err)
 	}
 
@@ -67,7 +67,7 @@ func TestRenderBaseURL(t *testing.T) {
 	skills := fixtureSkills()
 	outDir := t.TempDir()
 
-	if err := Render(skills, outDir, "/skills"); err != nil {
+	if err := Render(skills, outDir, Options{BaseURL: "/skills"}); err != nil {
 		t.Fatalf("Render() error = %v", err)
 	}
 

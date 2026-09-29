@@ -41,36 +41,56 @@ type cardView struct {
 	Badges      []badge
 }
 
-type indexPageData struct {
-	Title   string
-	Version string
+// Options configures the optional site features. The zero value keeps the
+// default site: domain-root paths, zip install commands, no extra theming.
+type Options struct {
+	// BaseURL prefixes every root-relative reference (e.g. "/skills").
 	BaseURL string
-	Skills  []cardView
+	// RepoURL, when set, switches install commands to the git repository
+	// and adds an "install everything" banner.
+	RepoURL string
+	// SiteName, when set, shows a title row above the search field.
+	SiteName string
+	// ExtraCSS and ExtraJS are file paths copied into assets/extra and
+	// linked after the built-in stylesheet and script.
+	ExtraCSS []string
+	ExtraJS  []string
+}
+
+type indexPageData struct {
+	Title    string
+	Version  string
+	BaseURL  string
+	RepoURL  string
+	SiteName string
+	ExtraCSS []string
+	ExtraJS  []string
+	Skills   []cardView
 }
 
 // Render writes the single-page static site (card grid plus its vendored
 // static assets) under outputDir. Skill detail is not rendered to separate
 // pages: it's populated client-side, in a slide-in panel, from
-// search-index.json (see BuildSearchIndex). baseURL prefixes every
+// search-index.json (see BuildSearchIndex). opts.BaseURL prefixes every
 // root-relative reference the page emits (assets, wordmark link) so the
-// site can be hosted under a subpath; pass "" to keep the previous
+// site can be hosted under a subpath; leave it "" to keep the previous
 // domain-root behavior.
-func Render(skills []*skill.Skill, outputDir, baseURL string) error {
+func Render(skills []*skill.Skill, outputDir string, opts Options) error {
 	tmpl, err := template.ParseFS(templatesFS, "templates/index.html.tmpl")
 	if err != nil {
 		return fmt.Errorf("parse index template: %w", err)
 	}
 
-	if err := renderIndex(tmpl, skills, outputDir, baseURL); err != nil {
+	if err := renderIndex(tmpl, skills, outputDir, opts); err != nil {
 		return err
 	}
 	if err := writeAssets(outputDir); err != nil {
 		return err
 	}
-	return nil
+	return copyExtras(outputDir, opts)
 }
 
-func renderIndex(tmpl *template.Template, skills []*skill.Skill, outputDir, baseURL string) error {
+func renderIndex(tmpl *template.Template, skills []*skill.Skill, outputDir string, opts Options) error {
 	cards := make([]cardView, len(skills))
 	for i, s := range skills {
 		cards[i] = buildCardView(s)
@@ -78,10 +98,17 @@ func renderIndex(tmpl *template.Template, skills []*skill.Skill, outputDir, base
 	sort.Slice(cards, func(i, j int) bool { return cards[i].Name < cards[j].Name })
 
 	data := indexPageData{
-		Title:   "Skill Indexer",
-		Version: Version,
-		BaseURL: baseURL,
-		Skills:  cards,
+		Title:    "Skill Indexer",
+		Version:  Version,
+		BaseURL:  opts.BaseURL,
+		RepoURL:  opts.RepoURL,
+		SiteName: opts.SiteName,
+		ExtraCSS: basenames(opts.ExtraCSS),
+		ExtraJS:  basenames(opts.ExtraJS),
+		Skills:   cards,
+	}
+	if opts.SiteName != "" {
+		data.Title = opts.SiteName
 	}
 
 	outPath := filepath.Join(outputDir, "index.html")

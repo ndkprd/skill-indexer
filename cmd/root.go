@@ -19,6 +19,10 @@ var (
 	skillDir  string
 	outputDir string
 	baseURL   string
+	repoURL   string
+	siteName  string
+	extraCSS  []string
+	extraJS   []string
 )
 
 func newLogger() zerolog.Logger {
@@ -37,8 +41,16 @@ var rootCmd = &cobra.Command{
 
 func runGenerate(cmd *cobra.Command, args []string) error {
 	log := newLogger()
-	base := normalizeBaseURL(baseURL)
-	log.Info().Str("event", "generate_start").Str("skill_dir", skillDir).Str("output_dir", outputDir).Str("base_url", base).Msg("starting generation")
+	opts := site.Options{
+		BaseURL:  normalizeBaseURL(baseURL),
+		RepoURL:  normalizeRepoURL(repoURL),
+		SiteName: strings.TrimSpace(siteName),
+		ExtraCSS: extraCSS,
+		ExtraJS:  extraJS,
+	}
+	log.Info().Str("event", "generate_start").Str("skill_dir", skillDir).Str("output_dir", outputDir).
+		Str("base_url", opts.BaseURL).Str("repository_url", opts.RepoURL).Str("site_name", opts.SiteName).
+		Strs("extra_css", opts.ExtraCSS).Strs("extra_js", opts.ExtraJS).Msg("starting generation")
 
 	if err := os.RemoveAll(outputDir); err != nil {
 		return fmt.Errorf("clear output dir %q: %w", outputDir, err)
@@ -53,7 +65,7 @@ func runGenerate(cmd *cobra.Command, args []string) error {
 	}
 	log.Info().Str("event", "skills_scanned").Int("valid_count", len(skills)).Int("skipped_count", len(warnings)).Msg("scanned skill directory")
 
-	if err := site.Render(skills, outputDir, base); err != nil {
+	if err := site.Render(skills, outputDir, opts); err != nil {
 		return fmt.Errorf("render site: %w", err)
 	}
 
@@ -61,7 +73,7 @@ func runGenerate(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	if err := writeSearchIndex(skills, outputDir, base); err != nil {
+	if err := writeSearchIndex(skills, outputDir, opts.BaseURL); err != nil {
 		return err
 	}
 
@@ -104,6 +116,10 @@ func init() {
 	rootCmd.Flags().StringVar(&skillDir, "skill-dir", "skills", "directory containing skill subdirectories to scan")
 	rootCmd.Flags().StringVar(&outputDir, "output-dir", "public", "directory to write the generated static site into")
 	rootCmd.Flags().StringVar(&baseURL, "base-url", "", "path prefix to serve the generated site under (e.g. /skills), for hosting off the domain root")
+	rootCmd.Flags().StringVar(&repoURL, "repository-url", "", "git URL of the repository holding the skills; install commands use it instead of zip URLs and an install-everything banner is shown")
+	rootCmd.Flags().StringVar(&siteName, "site-name", "", "site title shown above the search field")
+	rootCmd.Flags().StringSliceVar(&extraCSS, "extra-css", nil, "CSS file to copy into the site and load after the built-in stylesheet (repeatable)")
+	rootCmd.Flags().StringSliceVar(&extraJS, "extra-js", nil, "JS file to copy into the site and load after the built-in script (repeatable)")
 }
 
 // normalizeBaseURL strips a trailing slash and adds a leading one, so
@@ -118,4 +134,10 @@ func normalizeBaseURL(s string) string {
 		s = "/" + s
 	}
 	return s
+}
+
+// normalizeRepoURL trims whitespace and a trailing slash from the
+// repository URL.
+func normalizeRepoURL(s string) string {
+	return strings.TrimSuffix(strings.TrimSpace(s), "/")
 }
