@@ -81,7 +81,7 @@ downstream only ever sees the skills that parsed successfully.
 ## What happens in the browser
 
 There are no per-skill server routes or pages. `index.html` ships a card
-per skill (name, description, up to two metadata badges) rendered
+per skill (name, description, `version`/`author` badges) rendered
 server-side by `internal/site`. Clicking a card doesn't navigate anywhere —
 `app.js` opens a slide-in panel and populates it from `search-index.json`,
 which it already fetched once on page load for search. The panel's open/

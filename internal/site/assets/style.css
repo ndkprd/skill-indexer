@@ -176,7 +176,7 @@ img {
   top: 0;
   z-index: 10;
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   grid-template-areas: "brand search toggle";
   align-items: center;
   gap: var(--space-6);
@@ -189,6 +189,9 @@ img {
 .site-title {
   grid-area: brand;
   justify-self: start;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-family: var(--font-mono);
   font-size: var(--text-base);
   font-weight: 500;
@@ -200,7 +203,8 @@ img {
 .search-shell {
   grid-area: search;
   justify-self: center;
-  width: min(560px, 90vw);
+  width: 100%;
+  max-width: 560px;
 }
 
 .header-actions {
@@ -396,12 +400,6 @@ img {
   overflow: hidden;
 }
 
-.card-dirname {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  color: var(--color-text-tertiary);
-}
-
 /* View toggle (tile / list). The same card markup serves both layouts;
    only data-view on <html> changes. */
 
@@ -447,7 +445,7 @@ img {
 
 :root[data-view="list"] .card {
   display: grid;
-  grid-template-columns: minmax(0, 20rem) minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, min(22rem, 45%)) minmax(0, 1fr);
   align-items: center;
   gap: var(--space-4);
   padding: var(--space-3) var(--space-4);
@@ -458,18 +456,32 @@ img {
   transform: none;
 }
 
-:root[data-view="list"] .card-description {
-  -webkit-line-clamp: 1;
+/* One row per skill: the name truncates, the badges stay whole. */
+:root[data-view="list"] .card-head {
+  flex-wrap: nowrap;
+  min-width: 0;
 }
 
-:root[data-view="list"] .card-dirname {
+:root[data-view="list"] .card-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-@media (max-width: 767px) {
-  :root[data-view="list"] .card {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-1);
+:root[data-view="list"] .badge {
+  flex-shrink: 0;
+}
+
+:root[data-view="list"] .card-description {
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 639px) {
+  :root[data-view="list"] .badge {
+    display: none;
   }
 }
 
@@ -660,7 +672,8 @@ body.panel-open {
   z-index: 21;
   display: flex;
   flex-direction: column;
-  width: 55vw;
+  width: 40vw;
+  min-width: 360px;
   height: 100vh;
   padding: 0;
   margin: 0;
@@ -765,7 +778,7 @@ body.panel-open {
   /* A two-row bar would eat the viewport if it stayed pinned. */
   .site-header {
     position: relative;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
       "brand toggle"
       "search search";
@@ -783,6 +796,7 @@ body.panel-open {
 
   .skill-panel {
     width: 100vw;
+    min-width: 0;
   }
 
   .install-command-row {

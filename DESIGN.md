@@ -202,9 +202,9 @@ permanent property of resting, in-flow content.
 - **Default:** surface background, border in the neutral border color.
 - **Hover / Focus:** border shifts to the accent color, lifts 2px
   (`translateY`), hover shadow appears. Never a shadow at rest.
-- **Content:** name (mono, 500) + up to 2 metadata badges on one row,
-  2-line-clamped description below, dirname (mono, tertiary) as a footer
-  line. The whole card is a single link — no nested interactive elements.
+- **Content:** name (mono, 500) + `version` / `author` badges on one row,
+  2-line-clamped description below. No directory name on the card (it
+  stays in the detail panel). The whole card is a single link — no nested interactive elements.
 
 ### Badges
 - **Style:** pill shape, sunken background, 1px border, mono type, tertiary

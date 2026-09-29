@@ -203,3 +203,24 @@ func writeTempFile(t *testing.T, dir, name, content string) string {
 	}
 	return path
 }
+
+func TestPickBadgesOnlyVersionAndAuthor(t *testing.T) {
+	meta := map[string]any{"license": "MIT", "author": "octo", "version": "1.0.0", "zzz": "x"}
+	got := pickBadges(meta, cardBadgeKeys)
+	if len(got) != 2 || got[0].Key != "version" || got[1].Key != "author" {
+		t.Errorf("pickBadges() = %+v, want version then author only", got)
+	}
+	if got := pickBadges(map[string]any{"license": "MIT"}, cardBadgeKeys); len(got) != 0 {
+		t.Errorf("pickBadges() = %+v, want none", got)
+	}
+}
+
+func TestRenderCardOmitsDirName(t *testing.T) {
+	outDir := t.TempDir()
+	if err := Render(fixtureSkills(), outDir, Options{}); err != nil {
+		t.Fatalf("Render() error = %v", err)
+	}
+	if strings.Contains(readFile(t, filepath.Join(outDir, "index.html")), "card-dirname") {
+		t.Error("cards must not render the directory name")
+	}
+}

@@ -9,8 +9,8 @@ tags: [user-guide, search, install]
 ## Finding a skill
 
 1. Open the site. Every available skill shows as a card: a name, a short
-   description, and up to two badges (for example a version number or
-   author) when that information exists. Cards are sorted alphabetically
+   description, and a version and/or author badge when that information
+   exists. Cards are sorted alphabetically
    by name (case-sensitive, so all-capitals names sort before lowercase
    ones).
 2. Type into the search box in the header. Results filter as you type,

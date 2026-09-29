@@ -68,9 +68,8 @@ shape each subtest needs.
     the plan's FAQ for why this matters, and note that the third-party
     `skills` CLI (see below) also relies on this when installing directly
     from a zip download URL.
-  - Card badges use a fixed priority order (`version` → `author` →
-    `license` → `compatibility` → first remaining key alphabetically),
-    capped at 2. The panel's metadata table shows every key, sorted
+  - Cards show only the `version` and `author` badges (when the skill
+    defines them), and no directory name. The panel's metadata table shows every key, sorted
     alphabetically client-side (`app.js`'s `formatMetadataValue` mirrors
     `render.go`'s Go-side equivalent — keep both in sync if the format
     logic changes).

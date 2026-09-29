@@ -19,12 +19,8 @@ var templatesFS embed.FS
 //go:embed assets
 var assetsFS embed.FS
 
-// cardBadgePriority lists the metadata keys shown on a card, in order of
-// preference, before falling back to the first remaining key alphabetically.
-var cardBadgePriority = []string{"version", "author", "license", "compatibility"}
-
-// maxCardBadges caps how many metadata badges a card shows at a glance.
-const maxCardBadges = 2
+// cardBadgeKeys lists the only metadata keys shown on a card, in order.
+var cardBadgeKeys = []string{"version", "author"}
 
 // Version is shown in the generated site's footer trademark line.
 const Version = "0.1.1"
@@ -164,55 +160,20 @@ func buildCardView(s *skill.Skill) cardView {
 		Name:        s.Name,
 		DirName:     s.DirName,
 		Description: s.Description,
-		Badges:      pickBadges(s.Metadata, cardBadgePriority, maxCardBadges),
+		Badges:      pickBadges(s.Metadata, cardBadgeKeys),
 	}
 }
 
-// pickBadges selects up to max metadata entries for compact display,
-// preferring keys in priority order and falling back to the first
-// remaining key alphabetically.
-func pickBadges(metadata map[string]any, priority []string, max int) []badge {
-	if len(metadata) == 0 {
-		return nil
-	}
-
-	used := make(map[string]bool, max)
+// pickBadges returns the entries of metadata named in keys, in that order.
+// Keys the skill doesn't define are skipped.
+func pickBadges(metadata map[string]any, keys []string) []badge {
 	var badges []badge
-
-	for _, key := range priority {
-		if len(badges) >= max {
-			break
-		}
-		v, ok := metadata[key]
-		if !ok {
-			continue
-		}
-		badges = append(badges, badge{Key: key, Value: formatMetadataValue(v)})
-		used[key] = true
-	}
-
-	if len(badges) < max {
-		for _, key := range sortedKeys(metadata) {
-			if len(badges) >= max {
-				break
-			}
-			if used[key] {
-				continue
-			}
-			badges = append(badges, badge{Key: key, Value: formatMetadataValue(metadata[key])})
+	for _, key := range keys {
+		if v, ok := metadata[key]; ok {
+			badges = append(badges, badge{Key: key, Value: formatMetadataValue(v)})
 		}
 	}
-
 	return badges
-}
-
-func sortedKeys(m map[string]any) []string {
-	keys := make([]string, 0, len(m))
-	for k := range m {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-	return keys
 }
 
 // formatMetadataValue renders an arbitrary YAML-decoded value (string,
