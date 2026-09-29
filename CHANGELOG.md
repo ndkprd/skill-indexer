@@ -1,3 +1,18 @@
+## [0.4.0] - 2026-09-29
+
+### Features
+
+- *(site)* Add list view with tile/list icon toggle
+- *(site)* Polish header, list rows, card badges and panel width
+
+### Refactor
+
+- *(site)* Slim single-row sticky header, scrolling install-everything block
+
+### Miscellaneous Tasks
+
+- Untrack built binary and gitignore it
+
 ## [0.3.0] - 2026-09-29
 
 ### Features
