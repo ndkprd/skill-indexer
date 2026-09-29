@@ -69,6 +69,13 @@
   var currentPanelEntry = null;
   var installScope = "project"; // remembered across panel opens in this session
   var installScopeFlags = { project: "", global: " -g" };
+  var repoURL = window.__REPO_URL__ || "";
+
+  // Quote only when needed, so plain URLs and skill names stay readable.
+  function shellQuote(value) {
+    if (/^[\w.@%+=:,\/-]+$/.test(value)) return value;
+    return "'" + value.replace(/'/g, "'\\''") + "'";
+  }
 
   function formatMetadataValue(v) {
     if (Array.isArray(v)) return v.join(", ");
@@ -101,32 +108,56 @@
     });
     section.hidden = keys.length === 0;
 
-    var download = document.getElementById("panel-download");
-    download.href = entry.zipPath;
+    // Both links point at the same zip; only the saved file name differs.
+    setDownload("panel-download", entry.zipPath, entry.dirName + ".zip");
+    setDownload("panel-download-skill", entry.zipPath, entry.dirName + ".skill");
 
-    updateInstallCommand();
+    updateInstallCommands();
   }
 
-  function updateInstallCommand() {
-    var pre = document.getElementById("install-cmd");
-    if (!pre || !currentPanelEntry) return;
-    pre.textContent =
-      "npx skills add " +
-      window.location.origin +
-      currentPanelEntry.zipPath +
-      " -a claude-code -y" +
-      installScopeFlags[installScope];
+  function setDownload(id, href, filename) {
+    var link = document.getElementById(id);
+    link.href = href;
+    link.setAttribute("download", filename);
   }
 
+  function installCommand(entry) {
+    var flags = " -a claude-code -y" + installScopeFlags[installScope];
+    if (repoURL) {
+      return (
+        "npx skills add " + shellQuote(repoURL) + " --skill " + shellQuote(entry.name) + flags
+      );
+    }
+    return "npx skills add " + window.location.origin + entry.zipPath + flags;
+  }
+
+  function installAllCommand() {
+    return (
+      "npx skills add " + shellQuote(repoURL) + " --skill '*' -a claude-code -y" +
+      installScopeFlags[installScope]
+    );
+  }
+
+  function updateInstallCommands() {
+    document.querySelectorAll("[data-install-cmd]").forEach(function (pre) {
+      if (pre.getAttribute("data-install-cmd") === "all") {
+        pre.textContent = installAllCommand();
+      } else if (currentPanelEntry) {
+        pre.textContent = installCommand(currentPanelEntry);
+      }
+    });
+  }
+
+  // The panel and the install-everything banner share one scope.
   function initScopeToggle() {
     var buttons = document.querySelectorAll(".scope-option");
     buttons.forEach(function (button) {
       button.addEventListener("click", function () {
         installScope = button.getAttribute("data-scope");
         buttons.forEach(function (b) {
-          b.classList.toggle("is-active", b === button);
+          b.classList.toggle("is-active", b.getAttribute("data-scope") === installScope);
         });
-        updateInstallCommand();
+        updateInstallCommands();
       });
     });
   }
@@ -269,25 +300,24 @@
 
     window.addEventListener("popstate", syncPanelToHash);
 
-    initInstallCopyButton();
-    initScopeToggle();
     syncPanelToHash();
   }
 
-  function initInstallCopyButton() {
-    var copyButton = document.getElementById("copy-cmd");
-    if (!copyButton || !navigator.clipboard) return;
-
-    copyButton.addEventListener("click", function () {
-      var text = document.getElementById("install-cmd").textContent;
-      navigator.clipboard.writeText(text).then(function () {
-        var original = copyButton.textContent;
-        copyButton.textContent = "Copied";
-        copyButton.classList.add("is-copied");
-        window.setTimeout(function () {
-          copyButton.textContent = original;
-          copyButton.classList.remove("is-copied");
-        }, 1600);
+  function initInstallCopyButtons() {
+    if (!navigator.clipboard) return;
+    document.querySelectorAll("[data-install-block]").forEach(function (block) {
+      var copyButton = block.querySelector("[data-copy]");
+      var pre = block.querySelector("[data-install-cmd]");
+      copyButton.addEventListener("click", function () {
+        navigator.clipboard.writeText(pre.textContent).then(function () {
+          var original = copyButton.textContent;
+          copyButton.textContent = "Copied";
+          copyButton.classList.add("is-copied");
+          window.setTimeout(function () {
+            copyButton.textContent = original;
+            copyButton.classList.remove("is-copied");
+          }, 1600);
+        });
       });
     });
   }
@@ -369,6 +399,9 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     initTheme();
+    initScopeToggle();
+    initInstallCopyButtons();
+    updateInstallCommands();
 
     fetch((window.__BASE_URL__ || "") + "/search-index.json")
       .then(function (res) {

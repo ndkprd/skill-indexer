@@ -18,11 +18,27 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{.BaseURL}}/assets/style.css">
-  <script>window.__BASE_URL__ = {{.BaseURL}};</script>
+  {{range .ExtraCSS}}<link rel="stylesheet" href="{{$.BaseURL}}/assets/extra/{{.}}">
+  {{end}}<script>window.__BASE_URL__ = {{.BaseURL}};{{if .RepoURL}} window.__REPO_URL__ = {{.RepoURL}};{{end}}</script>
 </head>
 <body>
-  <header class="site-header">
-    <a class="wordmark" href="{{.BaseURL}}/">skill-indexer</a>
+  <header class="site-header{{if .SiteName}} is-titled{{end}}{{if .RepoURL}} has-install{{end}}">
+    {{if .SiteName}}<h1 class="site-title"><a href="{{.BaseURL}}/">{{.SiteName}}</a></h1>
+    {{else}}<a class="wordmark" href="{{.BaseURL}}/">skill-indexer</a>
+    {{end}}{{if .RepoURL}}<div class="install-all install-block" data-install-block>
+      <div class="install-label-row">
+        <p class="install-label">Install everything</p>
+        <div class="scope-toggle" role="group" aria-label="Install everything scope">
+          <button type="button" class="scope-option is-active" data-scope="project">Project</button>
+          <button type="button" class="scope-option" data-scope="global">Global</button>
+        </div>
+      </div>
+      <div class="install-command-row">
+        <pre class="install-cmd" data-install-cmd="all"></pre>
+        <button class="button button-ghost copy-button" type="button" data-copy aria-label="Copy install everything command">Copy</button>
+      </div>
+    </div>
+    {{end}}
     <div class="search-shell">
       <label class="visually-hidden" for="search-input">Search skills</label>
       <input id="search-input" class="search-input" type="search" placeholder="Search skills by name or description…" autocomplete="off">
@@ -78,7 +94,7 @@
       </button>
     </div>
     <div class="panel-actions">
-      <div class="install-block">
+      <div class="install-block" data-install-block>
         <div class="install-label-row">
           <p class="install-label">Install with npx</p>
           <div class="scope-toggle" role="group" aria-label="Install scope">
@@ -87,11 +103,14 @@
           </div>
         </div>
         <div class="install-command-row">
-          <pre id="install-cmd" class="install-cmd"></pre>
-          <button id="copy-cmd" class="button button-ghost copy-button" type="button" aria-label="Copy install command">Copy</button>
+          <pre id="install-cmd" class="install-cmd" data-install-cmd="skill"></pre>
+          <button id="copy-cmd" class="button button-ghost copy-button" type="button" data-copy aria-label="Copy install command">Copy</button>
         </div>
       </div>
-      <a id="panel-download" class="button button-primary" download>Download .zip</a>
+      <div class="download-row">
+        <a id="panel-download" class="button button-primary" download>Download .zip</a>
+        <a id="panel-download-skill" class="button button-ghost" download>Download .skill</a>
+      </div>
     </div>
     <div class="panel-body">
       <p id="panel-description" class="panel-description"></p>
@@ -105,5 +124,7 @@
 
   <script src="{{.BaseURL}}/assets/fuse.min.js"></script>
   <script src="{{.BaseURL}}/assets/app.js"></script>
+  {{range .ExtraJS}}<script src="{{$.BaseURL}}/assets/extra/{{.}}"></script>
+  {{end}}
 </body>
 </html>
