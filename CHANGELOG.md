@@ -1,3 +1,9 @@
+## [0.4.1] - 2026-09-29
+
+### Bug Fixes
+
+- *(site)* Bump footer version const to 0.4.1
+
 ## [0.4.0] - 2026-09-29
 
 ### Features
