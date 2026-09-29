@@ -15,6 +15,10 @@ either a CLI flag or a convention about the shape of a `SKILL.md` file.
 | --------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | `--skill-dir`   | string | `skills` | Directory containing skill subdirectories to scan. Each immediate subdirectory must contain a `SKILL.md`.                            |
 | `--output-dir`  | string | `public` | Directory to write the generated static site into. **Cleared and recreated on every run** — anything already there is deleted first. |
+| `--repository-url` | string | — | Git URL of the repository holding the skills. Switches install commands to `npx skills add <url> --skill <name>` and adds an "Install everything" banner. See [Repository install mode](#repository-install-mode). |
+| `--site-name`   | string | —        | Site title shown above the search field (and the install-everything banner); also used as the page `<title>`. Replaces the `skill-indexer` wordmark. |
+| `--extra-css`   | string, repeatable | — | CSS file copied to `assets/extra/` and loaded after the built-in stylesheet. See [Theming](#theming). |
+| `--extra-js`    | string, repeatable | — | JS file copied to `assets/extra/` and loaded after `app.js`. |
 | `--help` / `-h` | flag   | —        | Prints usage text.                                                                                                                   |
 
 Example:
@@ -88,12 +92,51 @@ warning is logged for it, unlike the cases above.
 See [Troubleshooting](./troubleshooting.md) if skills you expect to see are
 missing from the output.
 
+## Repository install mode
+
+By default each panel's command installs from the generated zip URL. With
+`--repository-url https://host/group/skills.git` it becomes:
+
+```bash
+npx skills add https://host/group/skills.git --skill <name> -a claude-code -y
+```
+
+and a banner at the top of the page offers `--skill '*'` to install every
+skill at once. `<name>` is the skill's frontmatter `name`. The repository
+must contain the skills in a layout the `skills` CLI can discover — that is
+the operator's responsibility; the generator does not check it. The URL is
+passed through verbatim (trailing `/` trimmed). The **Download .zip** and
+**Download .skill** buttons stay available in this mode.
+
+## Downloads
+
+Each panel offers **Download .zip** and **Download .skill**. A `.skill` file
+is the same archive with a different extension, so both links point at the
+one `downloads/<name>.zip` on disk and only the browser's saved file name
+differs (via the `download` attribute). That attribute is ignored if the
+zips are served from a different origin than the page; the file then saves
+under its `.zip` name.
+
+## Theming
+
+`--extra-css` and `--extra-js` (repeatable) copy files into `assets/extra/`
+and link them after the built-in `style.css` / `app.js`. Each must end in
+`.css` / `.js`, and basenames must be unique across both lists. To re-skin
+the site, override the `--color-*`, `--font-*` and `--radius-*` custom
+properties from `style.css` in all three places it defines them: `:root`,
+`:root[data-theme="dark"]`, and the `prefers-color-scheme: dark` block.
+
+```bash
+skill-indexer --extra-css my-theme.css --site-name "Acme Skills"
+```
+
 ## Site branding
 
 The generated site's footer ("Skill Indexer vX.Y.Z | by ndkprd", linking to
 `gitlab.com/endekasoft/skill-indexer` and `gitlab.com/endekasoft`) is
 currently **hardcoded** in `internal/site/templates/index.html.tmpl` —
-there is no flag or config option to change or remove it. Anyone
+there is no flag or config option to change or remove it (`--site-name` and
+`--extra-css` change the header and colors, not the footer). Anyone
 generating their own site with this version of Skill Indexer will ship that
 same attribution. If you need different branding, you currently have to
 edit the template source directly before building.

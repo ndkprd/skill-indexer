@@ -41,8 +41,14 @@ Each panel offers two ways to get a skill:
   [`skills`](https://github.com/vercel-labs/skills), an existing
   third-party package manager for Claude Code and other coding agents'
   skills — requires Node.js 22.20+.
-- **Download .zip**: downloads the skill's folder as a zip archive to
-  extract yourself. Works regardless of what's installed on your machine.
+- **Download .zip** / **Download .skill**: downloads the skill's folder as
+  an archive to extract yourself. Both buttons fetch the same file; only
+  the saved name differs. Works regardless of what's installed on your
+  machine.
+
+If the site shows an **Install everything** banner at the top, its command
+installs every skill in the repository at once, using the same
+Project/Global toggle.
 
 ### Choosing where it installs
 

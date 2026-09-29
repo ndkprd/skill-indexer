@@ -35,8 +35,13 @@ skill-indexer [flags]
 
 Flags:
   -h, --help                help for skill-indexer
-      --output-dir string   directory to write the generated static site into (default "public")
-      --skill-dir string    directory containing skill subdirectories to scan (default "skills")
+      --base-url string         path prefix to serve the generated site under (e.g. /skills), for hosting off the domain root
+      --extra-css strings       CSS file to copy into the site and load after the built-in stylesheet (repeatable)
+      --extra-js strings        JS file to copy into the site and load after the built-in script (repeatable)
+      --output-dir string       directory to write the generated static site into (default "public")
+      --repository-url string   git URL of the repository holding the skills; install commands use it instead of zip URLs and an install-everything banner is shown
+      --site-name string        site title shown above the search field
+      --skill-dir string        directory containing skill subdirectories to scan (default "skills")
 ```
 
 Each subdirectory of `--skill-dir` must contain a `SKILL.md` with YAML
@@ -51,10 +56,12 @@ rendered SKILL.md body is not shown anywhere in the UI — the frontmatter
 ```text
 public/
   index.html              the single page: header, card grid, detail panel
-  downloads/<name>.zip    each skill's full directory, zipped
+  downloads/<name>.zip    each skill's full directory, zipped (also served
+                           as "Download .skill" — same file, renamed on save)
   search-index.json       drives both client-side search and the detail
                            panel (Fuse.js reads it; so does app.js)
   assets/                 style.css, app.js, vendored fuse.min.js
+  assets/extra/           files passed via --extra-css / --extra-js
 ```
 
 There are no per-skill HTML pages. Clicking a card opens a slide-in panel
@@ -91,6 +98,11 @@ custom installer package is needed. A Project/Global toggle next to the
 command adds `-g` for the latter. Project scope installs to
 `./.claude/skills/<name>/`; global scope to `~/.claude/skills/<name>/`.
 `skills` itself requires Node.js 22.20+.
+
+With `--repository-url https://host/group/skills.git` the command instead
+installs from that git repository (`npx skills add <url> --skill <name>
+-a claude-code -y`), and an "Install everything" banner appears at the top
+of the page. See `docs/operator-guides/configuration.md`.
 
 ## Development
 

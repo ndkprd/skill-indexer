@@ -78,7 +78,7 @@ shape each subtest needs.
     rendered anywhere in the UI — the frontmatter `description` is
     considered sufficient. Don't re-add a markdown-to-HTML render step
     without confirming that's actually wanted again.
-  - The install command (`app.js`'s `updateInstallCommand`) shells out to
+  - The install command (`app.js`'s `installCommand`) shells out to
     `npx skills add <zip-url> -a claude-code -y[-g]` — the third-party
     [`vercel-labs/skills`](https://github.com/vercel-labs/skills) CLI, not
     a package this project ships or maintains. `skills` requires Node.js
@@ -87,6 +87,17 @@ shape each subtest needs.
     default uses. If you're tempted to bundle a custom installer instead,
     check `skills` actually stopped working first — see
     [Pitfalls](docs/developer-guides/pitfalls.md).
+- **Optional generator flags** (all off by default; `site.Options` carries
+  them into `Render`): `--repository-url` (repo-mode install commands via
+  inline `window.__REPO_URL__`, plus an install-everything banner living
+  *inside* `.site-header` so `inert` covers it), `--site-name` (title row,
+  replaces the wordmark), `--extra-css` / `--extra-js` (copied to
+  `assets/extra/`, linked after `style.css` / `app.js`, prefixed by
+  `BaseURL`). The panel and the banner share one Project/Global scope, and
+  `app.js` builds both commands from `installCommand`/`installAllCommand`.
+  The `.skill` download is the same zip with a different `download`
+  attribute — never write a second file. A brand theme such as ASDP Wave
+  lives in the gitignored `themes/` dir, not in the repo.
 - **Assets are vendored, not CDN-loaded** (except the two Google Fonts
   requests for IBM Plex Sans/Mono, which degrade to the system-font fallback
   stack if unreachable). `internal/site/assets/fuse.min.js` is a vendored
