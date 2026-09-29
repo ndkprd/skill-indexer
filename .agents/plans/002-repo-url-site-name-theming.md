@@ -125,63 +125,63 @@ Done when all hold, each checkable by script:
 ## Tasks
 
 ### Task 1: Introduce site.Options and wire the four new flags
-- **Status**: pending
+- **Status**: done
 - **Date**: 2026-09-29
 - **Related file**: `cmd/root.go`, `internal/site/render.go`
 - **Objective**: Replace `Render(skills, outputDir, baseURL)` with `Render(skills, outputDir, Options)` where `Options{BaseURL, RepoURL, SiteName string; ExtraCSS, ExtraJS []string}`; add cobra flags (`StringSliceVar` for extras) and normalize `--repository-url` (trim space and trailing `/`). Extend `indexPageData` with the new fields. Log new fields in `generate_start`.
 - **Verification**: `go build ./... && go test ./...` pass; `go run . --help` lists all four flags.
 
 ### Task 2: Copy and link extra CSS/JS (depends on Task 1)
-- **Status**: pending
+- **Status**: done
 - **Date**: 2026-09-29
 - **Related file**: `internal/site/render.go`, `internal/site/templates/index.html.tmpl`
 - **Objective**: In `Render`, copy each extra file to `<out>/assets/extra/<basename>`; error on unreadable file, directory, wrong extension (`.css`/`.js`), or duplicate basename across both lists. Template emits `<link rel="stylesheet">` after `style.css` and plain `<script src>` after `app.js`, each prefixed by `BaseURL`.
 - **Verification**: `go run . --skill-dir examples/skills --output-dir /tmp/o --extra-css x.css` then `grep 'assets/extra/x.css' /tmp/o/index.html` and `test -f /tmp/o/assets/extra/x.css`; passing a nonexistent path exits non-zero.
 
 ### Task 3: Render site-name title row (depends on Task 1)
-- **Status**: pending
+- **Status**: done
 - **Date**: 2026-09-29
 - **Related file**: `internal/site/templates/index.html.tmpl`, `internal/site/assets/style.css`
 - **Objective**: When `SiteName` is set, header becomes: row 1 `<h1 class="site-title">` (left) + theme toggle (right); below it the install-everything block (if any, Task 4) then search. Wordmark hidden and `<title>` uses site name. Without the flag, header markup/layout is unchanged. Follow `DESIGN.md` (flat, tokens only).
 - **Verification**: generate with `--site-name "ASDP Skills"`; `grep -c '<h1 class="site-title">ASDP Skills</h1>' public/index.html` = 1; without flag the grep = 0.
 
 ### Task 4: Repo-mode install commands and "Install everything" banner (depends on Task 1)
-- **Status**: pending
+- **Status**: done
 - **Date**: 2026-09-29
 - **Related file**: `internal/site/templates/index.html.tmpl`, `internal/site/assets/app.js`, `internal/site/assets/style.css`
 - **Objective**: Emit `window.__REPO_URL__` inline (only when set). `updateInstallCommand` builds `npx skills add <repo> --skill <name> -a claude-code -y[-g]` in repo mode, unchanged otherwise. Add a server-rendered `{{if .RepoURL}}` banner with command `npx skills add <repo> --skill '*' -a claude-code -y[-g]`, its own copy button, and scope toggle synced with the panel's `installScope`. Reuse the existing copy-button function rather than duplicating it a third time.
 - **Verification**: generate with `--repository-url https://example.com/g/skills.git`; `grep -c 'install-all' public/index.html` ≥ 1 and `grep '__REPO_URL__' public/index.html`; without flag both greps empty. Manual/Playwright: open panel, `#install-cmd` text starts with `npx skills add https://example.com/g/skills.git --skill `.
 
 ### Task 5: Add "Download .skill" link on the same zip (depends on Task 1 for template plumbing only)
-- **Status**: pending
+- **Status**: done
 - **Date**: 2026-09-29
 - **Related file**: `internal/site/templates/index.html.tmpl`, `internal/site/assets/app.js`
 - **Objective**: Add `<a id="panel-download-skill" class="button" download>Download .skill</a>` beside the zip button. `populatePanel` sets `href = entry.zipPath` and `download = entry.dirName + ".skill"`; the zip link gets `download = entry.dirName + ".zip"`. No new file is written to `downloads/`. Note merge overlap with Task 4 in `app.js`/template.
 - **Verification**: after generation `ls public/downloads | grep -c '\.skill$'` = 0; `grep panel-download-skill public/index.html` matches; Playwright: link `href` equals zip link `href`, `download` attr ends `.skill`.
 
 ### Task 6: Create gitignored asdp-wave.css theme (depends on Tasks 3, 4, 5 for class names)
-- **Status**: pending
+- **Status**: done
 - **Date**: 2026-09-29
 - **Related file**: `themes/asdp-wave.css`, `.gitignore`, `.dockerignore`
 - **Objective**: Add `/themes/` to `.gitignore` and `themes/` to `.dockerignore`. Write `themes/asdp-wave.css` porting the Zensical Wave tokens to skill-indexer's `--color-*`/`--font-*`/`--radius-*` variables, in all three places (`:root`, `:root[data-theme="dark"]`, `@media (prefers-color-scheme: dark) :root:not([data-theme="light"])`), with dark = Wave slate (not Nord). Add Google Fonts `@import` for Montserrat/Manrope/JetBrains Mono, Montserrat headings (`.site-title`, `.panel-name`, `.card-name`), 4px ribbon `::after` on `.site-header`, cyan focus ring, 140ms color transitions disabled under `prefers-reduced-motion`. Use `/frontend-design` + `/design-test-frontend` per user rules. No JS file.
 - **Verification**: `git check-ignore themes/asdp-wave.css` prints the path; `git status --porcelain` shows no `themes/`; `grep -c 'data-theme="dark"\|prefers-color-scheme' themes/asdp-wave.css` ≥ 2; generate with `--extra-css themes/asdp-wave.css` and screenshot both themes with Playwright to confirm primary `#1e398d` on the CTA in light and slate bg `#14182a` in dark.
 
 ### Task 7: Unit tests for new behavior (depends on Tasks 1–5)
-- **Status**: pending
+- **Status**: done
 - **Date**: 2026-09-29
 - **Related file**: `internal/site/render_test.go`, `cmd/root_test.go` (new)
 - **Objective**: Test: extras copied + linked with base-url prefix; duplicate basename and missing file error; site-name h1 present/absent; repo URL inline var + banner present/absent; `.skill` link markup present and no `.skill` file written; repo-URL normalization.
 - **Verification**: `go test ./... -run 'Extra|SiteName|Repo|Skill' -v` shows new tests passing; full `go test ./...` passes.
 
 ### Task 8: Update docs and AGENTS.md (depends on Tasks 1–6)
-- **Status**: pending
+- **Status**: done
 - **Date**: 2026-09-29
 - **Related file**: `README.md`, `docs/operator-guides/configuration.md`, `docs/user-guides/browsing-and-installing-skills.md`, `docs/developer-guides/pitfalls.md`, `AGENTS.md`
 - **Objective**: Document the four flags, repo-mode command shape, `.skill` = renamed zip (and cross-origin `download` caveat), theme workflow (`themes/` gitignored, pass via `--extra-css`), and add new call sites to the AGENTS.md "keep in sync" list. Fix AGENTS.md if it states the install command is zip-only.
 - **Verification**: `grep -l -- '--repository-url' README.md docs -r` lists ≥ 2 files; `grep -- '--site-name\|--extra-css' docs/operator-guides/configuration.md` matches.
 
 ### Task 9: End-to-end check
-- **Status**: pending
+- **Status**: done
 - **Date**: 2026-09-29
 - **Related file**: `examples/skills/`
 - **Objective**: Run generator with all flags on `examples/skills`, serve `public/` with a static server under `--base-url /marketplace`, and confirm assets, extras, panel commands, and downloads resolve.
