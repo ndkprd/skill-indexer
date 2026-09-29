@@ -94,8 +94,6 @@ passing project-wide.
   outside `metadata`, plus 4-space YAML indentation — edge case for the parser.
 - `skills/web-design-guidelines/SKILL.md` — `metadata.argument-hint` field, another
   free-form metadata key to confirm the parser doesn't require a fixed schema.
-- `skills/asdp-create-plan/SKILL.md` — this plan's own source skill, no code
-  relevance but useful as a "minimal" frontmatter (name + description only) fixture.
 
 ## Constraints / Scope
 
@@ -172,8 +170,7 @@ passing project-wide.
 - **Verification**: `go test ./internal/skill/... -run TestParseFrontmatter -v`
   passes, with subtests covering `skills/vue/SKILL.md` (nested metadata),
   `skills/vueuse-functions/SKILL.md` (top-level license/compatibility, 4-space
-  indent), `skills/asdp-create-plan/SKILL.md` (minimal frontmatter),
-  `skills/gitlab-cli/SKILL.md` (top-level `dependencies` list folded into
+  indent), `skills/gitlab-cli/SKILL.md` (top-level `dependencies` list folded into
   `Metadata`), `skills/playwright-cli/SKILL.md` (top-level `allowed-tools` as a
   string folded into `Metadata`), and a `t.TempDir()`-generated malformed fixture
   that must return a non-nil error.

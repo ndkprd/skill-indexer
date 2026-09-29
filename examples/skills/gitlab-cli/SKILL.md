@@ -22,10 +22,6 @@ Comprehensive GitLab CLI (glab) command reference and workflows.
 
 ## Quick start
 
-**Important Notes:**
-- If the git remote is `ssh.git.devops.asdp.id`, add `-R <repo-path>` flag to every command.
-
-
 ```bash
 # First time setup
 glab auth login
