@@ -95,3 +95,14 @@ docker run --rm \
 
 Useful if you'd rather run generation inside your own infrastructure by
 hand than install Go locally.
+
+## Sample themes
+
+`examples/themes/` has two small sample themes, `dracula.css` and
+`monokai.css`. They only override the `--color-*` tokens, so they double as
+a template for your own. Pass one with `--extra-css`:
+
+```bash
+go run . --skill-dir examples/skills --output-dir public \
+  --extra-css examples/themes/dracula.css
+```

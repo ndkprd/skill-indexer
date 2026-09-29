@@ -1,0 +1,28 @@
+/*
+ * Monokai sample theme for skill-indexer.
+ * Load with: skill-indexer --extra-css examples/themes/monokai.css
+ * Monokai is a dark palette, so it applies in both the light and dark toggle
+ * states. The selector list is wide enough to beat the built-in light,
+ * dark and prefers-color-scheme blocks.
+ */
+
+:root,
+:root:not([data-theme="none"]),
+:root[data-theme="light"],
+:root[data-theme="dark"] {
+  --color-bg: #272822;
+  --color-surface: #3e3d32;
+  --color-surface-sunken: #1e1f1c;
+  --color-border: #49483e;
+  --color-border-strong: #75715e;
+  --color-text: #f8f8f2;
+  --color-text-secondary: #cfcfc2;
+  --color-text-tertiary: color-mix(in oklch, #cfcfc2 60%, #272822);
+  --color-accent: #66d9ef;
+  --color-accent-hover: #89e3f5;
+  --color-accent-tint: color-mix(in oklch, #66d9ef 18%, #272822);
+  --color-success: #a6e22e;
+  --color-backdrop: rgb(0 0 0 / 0.55);
+  --shadow-hover: 0 2px 10px rgb(0 0 0 / 0.3);
+  --shadow-panel: -8px 0 32px rgb(0 0 0 / 0.45);
+}

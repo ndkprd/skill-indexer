@@ -1,0 +1,28 @@
+/*
+ * Dracula sample theme for skill-indexer.
+ * Load with: skill-indexer --extra-css examples/themes/dracula.css
+ * Dracula is a dark palette, so it applies in both the light and dark toggle
+ * states. The selector list is wide enough to beat the built-in light,
+ * dark and prefers-color-scheme blocks.
+ */
+
+:root,
+:root:not([data-theme="none"]),
+:root[data-theme="light"],
+:root[data-theme="dark"] {
+  --color-bg: #282a36;
+  --color-surface: #343746;
+  --color-surface-sunken: #21222c;
+  --color-border: #44475a;
+  --color-border-strong: #6272a4;
+  --color-text: #f8f8f2;
+  --color-text-secondary: #d6d6ce;
+  --color-text-tertiary: color-mix(in oklch, #d6d6ce 60%, #282a36);
+  --color-accent: #bd93f9;
+  --color-accent-hover: #ff79c6;
+  --color-accent-tint: color-mix(in oklch, #bd93f9 18%, #282a36);
+  --color-success: #50fa7b;
+  --color-backdrop: rgb(0 0 0 / 0.55);
+  --shadow-hover: 0 2px 10px rgb(0 0 0 / 0.3);
+  --shadow-panel: -8px 0 32px rgb(0 0 0 / 0.45);
+}
