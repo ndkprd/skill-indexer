@@ -93,3 +93,110 @@ func readFile(t *testing.T, path string) string {
 	}
 	return string(data)
 }
+
+func TestRenderDefaultsOmitOptionalParts(t *testing.T) {
+	outDir := t.TempDir()
+	if err := Render(fixtureSkills(), outDir, Options{}); err != nil {
+		t.Fatalf("Render() error = %v", err)
+	}
+
+	indexHTML := readFile(t, filepath.Join(outDir, "index.html"))
+	for _, notWant := range []string{`site-title`, `__REPO_URL__`, `data-install-cmd="all"`, `assets/extra/`} {
+		if strings.Contains(indexHTML, notWant) {
+			t.Errorf("default index.html unexpectedly contains %q", notWant)
+		}
+	}
+	if !strings.Contains(indexHTML, `id="panel-download-skill"`) {
+		t.Error("index.html missing the .skill download link")
+	}
+}
+
+func TestRenderSiteNameAndRepoURL(t *testing.T) {
+	outDir := t.TempDir()
+	opts := Options{SiteName: "ASDP Skills", RepoURL: "https://example.com/g/skills.git"}
+	if err := Render(fixtureSkills(), outDir, opts); err != nil {
+		t.Fatalf("Render() error = %v", err)
+	}
+
+	indexHTML := readFile(t, filepath.Join(outDir, "index.html"))
+	for _, want := range []string{
+		`<h1 class="site-title">`,
+		`<title>ASDP Skills</title>`,
+		`window.__REPO_URL__ = "https://example.com/g/skills.git";`,
+		`data-install-cmd="all"`,
+	} {
+		if !strings.Contains(indexHTML, want) {
+			t.Errorf("index.html missing %q", want)
+		}
+	}
+	header := indexHTML[strings.Index(indexHTML, "<header"):strings.Index(indexHTML, "</header>")]
+	if !strings.Contains(header, `data-install-cmd="all"`) {
+		t.Error("install-everything banner must live inside the header (inert handling)")
+	}
+}
+
+func TestRenderExtras(t *testing.T) {
+	src := t.TempDir()
+	css := writeTempFile(t, src, "theme.css", "body{}")
+	js := writeTempFile(t, src, "theme.js", "void 0")
+	outDir := t.TempDir()
+
+	opts := Options{BaseURL: "/skills", ExtraCSS: []string{css}, ExtraJS: []string{js}}
+	if err := Render(fixtureSkills(), outDir, opts); err != nil {
+		t.Fatalf("Render() error = %v", err)
+	}
+
+	indexHTML := readFile(t, filepath.Join(outDir, "index.html"))
+	for _, want := range []string{
+		`href="/skills/assets/extra/theme.css"`,
+		`src="/skills/assets/extra/theme.js"`,
+	} {
+		if !strings.Contains(indexHTML, want) {
+			t.Errorf("index.html missing %q", want)
+		}
+	}
+	if got := readFile(t, filepath.Join(outDir, "assets", "extra", "theme.css")); got != "body{}" {
+		t.Errorf("copied css = %q", got)
+	}
+	if strings.Index(indexHTML, "assets/style.css") > strings.Index(indexHTML, "assets/extra/theme.css") {
+		t.Error("extra css must load after style.css")
+	}
+}
+
+func TestRenderExtrasErrors(t *testing.T) {
+	src := t.TempDir()
+	css := writeTempFile(t, src, "a.css", "")
+	otherDir := t.TempDir()
+	dupCSS := writeTempFile(t, otherDir, "a.css", "")
+	txt := writeTempFile(t, src, "a.txt", "")
+
+	tests := []struct {
+		name string
+		opts Options
+	}{
+		{"missing file", Options{ExtraCSS: []string{filepath.Join(src, "nope.css")}}},
+		{"directory", Options{ExtraCSS: []string{src + "/dir.css"}}},
+		{"wrong extension", Options{ExtraCSS: []string{txt}}},
+		{"css given as js", Options{ExtraJS: []string{css}}},
+		{"duplicate basename", Options{ExtraCSS: []string{css, dupCSS}}},
+	}
+	if err := os.Mkdir(src+"/dir.css", 0o755); err != nil {
+		t.Fatal(err)
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := Render(fixtureSkills(), t.TempDir(), tt.opts); err == nil {
+				t.Error("Render() error = nil, want error")
+			}
+		})
+	}
+}
+
+func writeTempFile(t *testing.T, dir, name, content string) string {
+	t.Helper()
+	path := filepath.Join(dir, name)
+	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
+		t.Fatalf("write %s: %v", path, err)
+	}
+	return path
+}
