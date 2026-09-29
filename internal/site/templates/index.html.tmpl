@@ -22,22 +22,9 @@
   {{end}}<script>window.__BASE_URL__ = {{.BaseURL}};{{if .RepoURL}} window.__REPO_URL__ = {{.RepoURL}};{{end}}</script>
 </head>
 <body>
-  <header class="site-header{{if .SiteName}} is-titled{{end}}{{if .RepoURL}} has-install{{end}}">
+  <header class="site-header">
     {{if .SiteName}}<h1 class="site-title"><a href="{{.BaseURL}}/">{{.SiteName}}</a></h1>
     {{else}}<a class="wordmark" href="{{.BaseURL}}/">skill-indexer</a>
-    {{end}}{{if .RepoURL}}<div class="install-all install-block" data-install-block>
-      <div class="install-label-row">
-        <p class="install-label">Install everything</p>
-        <div class="scope-toggle" role="group" aria-label="Install everything scope">
-          <button type="button" class="scope-option is-active" data-scope="project">Project</button>
-          <button type="button" class="scope-option" data-scope="global">Global</button>
-        </div>
-      </div>
-      <div class="install-command-row">
-        <pre class="install-cmd" data-install-cmd="all"></pre>
-        <button class="button button-ghost copy-button" type="button" data-copy aria-label="Copy install everything command">Copy</button>
-      </div>
-    </div>
     {{end}}
     <div class="search-shell">
       <label class="visually-hidden" for="search-input">Search skills</label>
@@ -55,6 +42,20 @@
   </header>
 
   <main class="site-main">
+    {{if .RepoURL}}<section class="install-all install-block" data-install-block aria-label="Install everything">
+      <div class="install-label-row">
+        <p class="install-label">Install everything</p>
+        <div class="scope-toggle" role="group" aria-label="Install everything scope">
+          <button type="button" class="scope-option is-active" data-scope="project">Project</button>
+          <button type="button" class="scope-option" data-scope="global">Global</button>
+        </div>
+      </div>
+      <div class="install-command-row">
+        <pre class="install-cmd" data-install-cmd="all"></pre>
+        <button class="button button-ghost copy-button" type="button" data-copy aria-label="Copy install everything command">Copy</button>
+      </div>
+    </section>
+    {{end}}
     <p id="load-error" class="load-error" hidden>Could not load skill data — search and details are unavailable. Try reloading the page.</p>
     <p id="no-results" class="no-results" hidden></p>
     <div id="card-grid" class="card-grid">

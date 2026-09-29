@@ -129,9 +129,9 @@ func TestRenderSiteNameAndRepoURL(t *testing.T) {
 			t.Errorf("index.html missing %q", want)
 		}
 	}
-	header := indexHTML[strings.Index(indexHTML, "<header"):strings.Index(indexHTML, "</header>")]
-	if !strings.Contains(header, `data-install-cmd="all"`) {
-		t.Error("install-everything banner must live inside the header (inert handling)")
+	main := indexHTML[strings.Index(indexHTML, "<main"):strings.Index(indexHTML, "</main>")]
+	if !strings.Contains(main, `data-install-cmd="all"`) {
+		t.Error("install-everything block must live inside main (scrolls away, inert with it)")
 	}
 }
 

@@ -89,9 +89,9 @@ shape each subtest needs.
     [Pitfalls](docs/developer-guides/pitfalls.md).
 - **Optional generator flags** (all off by default; `site.Options` carries
   them into `Render`): `--repository-url` (repo-mode install commands via
-  inline `window.__REPO_URL__`, plus an install-everything banner living
-  _inside_ `.site-header` so `inert` covers it), `--site-name` (title row,
-  replaces the wordmark), `--extra-css` / `--extra-js` (copied to
+  inline `window.__REPO_URL__`, plus an install-everything block at the top of
+  `<main>` — it scrolls away; only the slim header is sticky), `--site-name`
+  (replaces the wordmark in the header), `--extra-css` / `--extra-js` (copied to
   `assets/extra/`, linked after `style.css` / `app.js`, prefixed by
   `BaseURL`). The panel and the banner share one Project/Global scope, and
   `app.js` builds both commands from `installCommand`/`installAllCommand`.

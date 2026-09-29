@@ -117,7 +117,7 @@ func init() {
 	rootCmd.Flags().StringVar(&outputDir, "output-dir", "public", "directory to write the generated static site into")
 	rootCmd.Flags().StringVar(&baseURL, "base-url", "", "path prefix to serve the generated site under (e.g. /skills), for hosting off the domain root")
 	rootCmd.Flags().StringVar(&repoURL, "repository-url", "", "git URL of the repository holding the skills; install commands use it instead of zip URLs and an install-everything banner is shown")
-	rootCmd.Flags().StringVar(&siteName, "site-name", "", "site title shown above the search field")
+	rootCmd.Flags().StringVar(&siteName, "site-name", "", "site title shown in the header in place of the wordmark")
 	rootCmd.Flags().StringSliceVar(&extraCSS, "extra-css", nil, "CSS file to copy into the site and load after the built-in stylesheet (repeatable)")
 	rootCmd.Flags().StringSliceVar(&extraJS, "extra-js", nil, "JS file to copy into the site and load after the built-in script (repeatable)")
 }

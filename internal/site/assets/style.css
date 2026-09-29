@@ -180,7 +180,7 @@ img {
   grid-template-areas: "brand search toggle";
   align-items: center;
   gap: var(--space-6);
-  padding: var(--space-4) var(--space-6);
+  padding: var(--space-3) var(--space-6);
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
 }
@@ -208,40 +208,25 @@ img {
   justify-self: end;
 }
 
-/* Optional header parts: --site-name adds a title row, --repository-url an
-   install-everything row. Each modifier adds only the rows it needs. */
+/* --site-name swaps the wordmark for a title; both sit in the same slot. */
 
 .site-title {
-  font-size: var(--text-lg);
+  font-size: var(--text-base);
   font-weight: 600;
-  line-height: 1.2;
   letter-spacing: -0.01em;
   color: var(--color-text);
+  white-space: nowrap;
 }
+
+/* --repository-url adds an install-everything block above the grid. It
+   scrolls with the page: only the slim header stays pinned. */
 
 .install-all {
-  grid-area: install;
-  justify-self: center;
-  width: min(560px, 100%);
-}
-
-.site-header.has-install {
-  grid-template-areas:
-    "brand search toggle"
-    "install install install";
-}
-
-.site-header.is-titled {
-  grid-template-areas:
-    "brand brand toggle"
-    "search search search";
-}
-
-.site-header.is-titled.has-install {
-  grid-template-areas:
-    "brand brand toggle"
-    "install install install"
-    "search search search";
+  margin-bottom: var(--space-6);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
 }
 
 .search-input {
@@ -703,33 +688,19 @@ body.panel-open {
 /* Responsive: content-driven breakpoints */
 
 @media (max-width: 767px) {
+  /* A two-row bar would eat the viewport if it stayed pinned. */
   .site-header {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .site-header.is-titled {
-    display: grid;
+    position: relative;
     grid-template-columns: 1fr auto;
     grid-template-areas:
       "brand toggle"
       "search search";
-  }
-
-  .site-header.is-titled.has-install {
-    grid-template-areas:
-      "brand toggle"
-      "install install"
-      "search search";
+    gap: var(--space-3) var(--space-4);
   }
 
   .search-shell {
     width: 100%;
-  }
-
-  .theme-toggle {
-    align-self: flex-end;
+    justify-self: stretch;
   }
 
   .site-main {
@@ -746,12 +717,6 @@ body.panel-open {
 }
 
 @media (max-width: 639px) {
-  /* A tall stacked header would eat the viewport if it stayed sticky. */
-  .site-header.is-titled,
-  .site-header.has-install {
-    position: static;
-  }
-
   .card-grid {
     grid-template-columns: 1fr;
   }

@@ -40,7 +40,7 @@ Flags:
       --extra-js strings        JS file to copy into the site and load after the built-in script (repeatable)
       --output-dir string       directory to write the generated static site into (default "public")
       --repository-url string   git URL of the repository holding the skills; install commands use it instead of zip URLs and an install-everything banner is shown
-      --site-name string        site title shown above the search field
+      --site-name string        site title shown in the header in place of the wordmark
       --skill-dir string        directory containing skill subdirectories to scan (default "skills")
 ```
 
