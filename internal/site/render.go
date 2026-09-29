@@ -23,7 +23,7 @@ var assetsFS embed.FS
 var cardBadgeKeys = []string{"version", "author"}
 
 // Version is shown in the generated site's footer trademark line.
-const Version = "0.1.1"
+const Version = "0.4.1"
 
 type badge struct {
 	Key   string
