@@ -98,6 +98,10 @@ shape each subtest needs.
   The `.skill` download is the same zip with a different `download`
   attribute — never write a second file. A private brand theme
   lives in the gitignored `themes/` dir, not in the repo.
+- **Tile/list view** is CSS-only: `data-view="list"` on `<html>` (set by
+  the inline head script from `localStorage`, toggled in `app.js`'s
+  `setView`) restyles the same `.card` markup. Don't render a second list
+  DOM.
 - **Assets are vendored, not CDN-loaded** (except the two Google Fonts
   requests for IBM Plex Sans/Mono, which degrade to the system-font fallback
   stack if unreachable). `internal/site/assets/fuse.min.js` is a vendored

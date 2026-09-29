@@ -74,6 +74,12 @@ Each zip's entries are prefixed with the skill's own directory name (e.g.
 reproduces a `<name>/...` layout matching the `--skill-dir` convention the
 generator itself expects as input.
 
+## Tile and list view
+
+Two icon buttons in the header switch between the card grid and a compact
+one-row-per-skill list. The choice persists via `localStorage`. Both layouts
+use the same markup; only `data-view` on `<html>` changes.
+
 ## Dark mode
 
 A theme toggle in the header switches between the default light theme and a

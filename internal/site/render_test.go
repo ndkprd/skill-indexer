@@ -106,6 +106,9 @@ func TestRenderDefaultsOmitOptionalParts(t *testing.T) {
 			t.Errorf("default index.html unexpectedly contains %q", notWant)
 		}
 	}
+	if !strings.Contains(indexHTML, `data-view="list"`) || !strings.Contains(indexHTML, `data-view="tile"`) {
+		t.Error("index.html missing the tile/list view toggle")
+	}
 	if !strings.Contains(indexHTML, `id="panel-download-skill"`) {
 		t.Error("index.html missing the .skill download link")
 	}

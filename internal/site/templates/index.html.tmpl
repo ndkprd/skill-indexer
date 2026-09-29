@@ -11,6 +11,9 @@
         if (t === "light" || t === "dark") {
           document.documentElement.setAttribute("data-theme", t);
         }
+        if (localStorage.getItem("view") === "list") {
+          document.documentElement.setAttribute("data-view", "list");
+        }
       } catch (e) {}
     })();
   </script>
@@ -30,6 +33,22 @@
       <label class="visually-hidden" for="search-input">Search skills</label>
       <input id="search-input" class="search-input" type="search" placeholder="Search skills by name or description…" autocomplete="off">
     </div>
+    <div class="header-actions">
+    <div class="view-toggle" role="group" aria-label="Skill layout">
+      <button type="button" class="view-option" data-view="tile" aria-pressed="true" aria-label="Tile view" title="Tile view">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+          <rect x="4" y="4" width="6" height="6" rx="1"></rect>
+          <rect x="14" y="4" width="6" height="6" rx="1"></rect>
+          <rect x="4" y="14" width="6" height="6" rx="1"></rect>
+          <rect x="14" y="14" width="6" height="6" rx="1"></rect>
+        </svg>
+      </button>
+      <button type="button" class="view-option" data-view="list" aria-pressed="false" aria-label="List view" title="List view">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 6h.01M4 12h.01M4 18h.01M9 6h11M9 12h11M9 18h11"></path>
+        </svg>
+      </button>
+    </div>
     <button id="theme-toggle" class="theme-toggle" type="button" aria-pressed="false" aria-label="Toggle dark mode">
       <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
         <circle cx="12" cy="12" r="4"></circle>
@@ -39,6 +58,7 @@
         <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"></path>
       </svg>
     </button>
+    </div>
   </header>
 
   <main class="site-main">

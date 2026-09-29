@@ -62,6 +62,12 @@ The `npx` command has a **Project** / **Global** toggle above it:
 Your choice is remembered while you keep browsing, so you don't have to
 reselect it for every skill.
 
+## Tile and list view
+
+The two icon buttons in the header switch between tiles (a card grid) and a
+compact list with one skill per row. The list fits more skills on screen;
+your choice is remembered in your browser.
+
 ## Dark mode
 
 Click the sun/moon icon in the header to switch between light and dark

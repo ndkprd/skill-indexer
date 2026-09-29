@@ -64,6 +64,34 @@
       });
   }
 
+  // ---- View (tile / list) ----
+
+  function setView(view) {
+    if (view === "list") document.documentElement.setAttribute("data-view", "list");
+    else document.documentElement.removeAttribute("data-view");
+    try {
+      localStorage.setItem("view", view);
+    } catch (e) {}
+    document.querySelectorAll(".view-option").forEach(function (button) {
+      button.setAttribute(
+        "aria-pressed",
+        button.getAttribute("data-view") === view ? "true" : "false"
+      );
+    });
+  }
+
+  function initView() {
+    document.querySelectorAll(".view-option").forEach(function (button) {
+      button.addEventListener("click", function () {
+        setView(button.getAttribute("data-view"));
+      });
+    });
+    // The inline head script already applied any stored view; sync the buttons.
+    setView(
+      document.documentElement.getAttribute("data-view") === "list" ? "list" : "tile"
+    );
+  }
+
   // ---- Detail panel ----
 
   var currentPanelEntry = null;
@@ -399,6 +427,7 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     initTheme();
+    initView();
     initScopeToggle();
     initInstallCopyButtons();
     updateInstallCommands();
