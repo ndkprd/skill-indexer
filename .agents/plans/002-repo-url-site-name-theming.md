@@ -5,11 +5,7 @@
 Add four opt-in generator features to `skill-indexer`: a `--repository-url` flag that switches the
 npx install command from zip URL to git repo URL (plus an "Install everything" banner), a
 "Download .skill" option that reuses the existing zip file, a `--site-name` flag that adds a title
-row above search, and `--extra-css` / `--extra-js` flags for theming, with an ASDP Wave CSS theme
-kept out of git. All defaults preserve current behavior.
-
-> Original request item 1 (rename `asdp-(action)-(context)` skills) and its `best-practice-*`
-> follow-up were **dropped by the user** — those skills live in a different repo.
+row above search, and `--extra-css` / `--extra-js` flags for theming, with a brand theme kept out of git. All defaults preserve current behavior.
 
 ### Flowchart
 
@@ -56,15 +52,11 @@ sequenceDiagram
 - Header today is a single row: wordmark | search | theme toggle (`.site-header`, `style.css`).
 - Theming tokens are `--color-*` in `:root`, mirrored in `:root[data-theme="dark"]` and the
   `prefers-color-scheme` block (Nord dark). AGENTS.md requires both blocks stay identical.
-- The Zensical theme `~/devops/pipelines/asdp-ci-pipelines/scripts/deploys/zensical/asdp-wave.css`
-  targets `.md-*` classes, so it cannot be copied verbatim; only its **tokens and design rules**
-  port over: `--asdp-*` palette (primary `#1e398d`, cyan `#00aeef`, ribbon gradient), light scheme
-  plus dark "slate" scheme (bg `#14182a`, fg `#edeef3`, accent `#6c91ec`, code bg `#1d2130`),
-  Montserrat headings with tight letter-spacing, Manrope body, JetBrains Mono code, 4px ribbon bar
-  under header, radii 6/10/16, cool shadows, cyan focus ring, 140ms transitions honoring reduced motion.
-- Layout reference `~/devel/devops/gitlab-docs-indexer/docs-indexer-web/src/App.vue` +
-  `components/AppHeader.vue`: title block (bold display-font h1, muted subtitle) on the left, theme
-  toggle on the right, content controls (search) below, ribbon-gradient footer.
+- A brand theme (a plain CSS file) can be supplied via `--extra-css` by overriding the `--color-*`,
+  `--font-*` and `--radius-*` tokens; it may also add a thin accent bar under the header and a focus
+  ring. Such themes are private to the operator and are not shipped in this repo.
+- Layout goal for `--site-name`: title block on the left, theme toggle on the right, content controls
+  (install banner, search) below.
 - `search-index.json` must stay lean; repo URL is global, so it goes in an inline `window.__REPO_URL__`
   like `window.__BASE_URL__`, not per entry.
 
@@ -77,7 +69,7 @@ Done when all hold, each checkable by script:
 3. Each panel has "Download .zip" and "Download .skill" links pointing at the same `/downloads/<dir>.zip`; no `.skill` file exists on disk; `.skill` link carries `download="<dir>.skill"`.
 4. `--extra-css a.css --extra-js b.js` (repeatable) copies files to `assets/extra/` and links them after `style.css` / `app.js`; missing file fails generation.
 5. `--site-name "X"` renders an `<h1>` with X above search (and banner); default output has no `<h1>` site-name row.
-6. `themes/asdp-wave.css` exists locally, is gitignored, and re-skins both light and dark modes when passed via `--extra-css`. No `asdp-wave.js` (CSS suffices).
+6. A local `themes/brand.css` is gitignored and re-skins both light and dark modes when passed via `--extra-css`. No theme JS (CSS suffices).
 7. `go build ./... && go vet ./... && gofmt -l . && go test ./...` clean.
 
 ## References
@@ -92,8 +84,6 @@ Done when all hold, each checkable by script:
 - `AGENTS.md` — conventions (both theme blocks, base-url sync, no build step, no serve command).
 - `.agents/plans/001-skill-marketplace-generator.md` — original decisions (zip layout, single page).
 - `docs/operator-guides/configuration.md`, `docs/developer-guides/pitfalls.md`, `README.md` — docs to update.
-- `~/devops/pipelines/asdp-ci-pipelines/scripts/deploys/zensical/asdp-wave.css` — theme source.
-- `~/devel/devops/gitlab-docs-indexer/docs-indexer-web/src/App.vue`, `components/AppHeader.vue` — layout source.
 
 ## Constraints / Scope
 
@@ -101,13 +91,12 @@ Done when all hold, each checkable by script:
 - Flags `--repository-url`, `--site-name`, `--extra-css`, `--extra-js` (last two repeatable).
 - Repo-mode install command + "Install everything" banner (scope toggle shared with panel).
 - `.skill` download link via `download` attribute on the existing zip.
-- `themes/asdp-wave.css` (gitignored) ported from Zensical tokens/rules.
+- A gitignored `themes/` dir for operator-private theme CSS (an example brand theme is built locally, not committed).
 - Tests, README/docs/AGENTS.md updates.
 
 **Out of scope:**
-- Renaming `asdp-*` skills (other repo; user dropped it).
 - Emitting a real second `.skill` file / hardlink / symlink.
-- Embedding the theme in the binary; a `--theme` flag; `asdp-wave.js`.
+- Embedding the theme in the binary; a `--theme` flag; a theme JS file.
 - Hiding zip/.skill downloads in repo mode (both stay).
 - A `serve` subcommand, CSS framework, or JS build step (AGENTS.md).
 - Site-name subtitle/stat tiles from AppHeader.vue (only the title + layout position).
@@ -115,12 +104,11 @@ Done when all hold, each checkable by script:
 **Non-negotiables:**
 - Defaults unchanged when no new flag is set.
 - Base-url handling stays in sync: every new root-relative ref (extra assets) is prefixed by `BaseURL`.
-- Light/dark token blocks stay identical in variable sets; wave theme overrides all three blocks.
+- Light/dark token blocks stay identical in variable sets; a theme overrides all three blocks.
 - `prefers-reduced-motion` respected; focus trap/`inert` behavior untouched.
 - `themes/` must be in `.gitignore`; never `git add` its contents.
 - Logging stays in `cmd/`; `internal/site` returns errors.
 - Branch `<model>/feature/<slug>` from `main`; Conventional Commits; no push/merge to `main` without approval.
-- Track work as GitLab issues per user's roadmap convention before implementing.
 
 ## Tasks
 
@@ -143,7 +131,7 @@ Done when all hold, each checkable by script:
 - **Date**: 2026-09-29
 - **Related file**: `internal/site/templates/index.html.tmpl`, `internal/site/assets/style.css`
 - **Objective**: When `SiteName` is set, header becomes: row 1 `<h1 class="site-title">` (left) + theme toggle (right); below it the install-everything block (if any, Task 4) then search. Wordmark hidden and `<title>` uses site name. Without the flag, header markup/layout is unchanged. Follow `DESIGN.md` (flat, tokens only).
-- **Verification**: generate with `--site-name "ASDP Skills"`; `grep -c '<h1 class="site-title">ASDP Skills</h1>' public/index.html` = 1; without flag the grep = 0.
+- **Verification**: generate with `--site-name "Example Skills"`; `grep -c '<h1 class="site-title">Example Skills</h1>' public/index.html` = 1; without flag the grep = 0.
 
 ### Task 4: Repo-mode install commands and "Install everything" banner (depends on Task 1)
 - **Status**: done
@@ -159,12 +147,12 @@ Done when all hold, each checkable by script:
 - **Objective**: Add `<a id="panel-download-skill" class="button" download>Download .skill</a>` beside the zip button. `populatePanel` sets `href = entry.zipPath` and `download = entry.dirName + ".skill"`; the zip link gets `download = entry.dirName + ".zip"`. No new file is written to `downloads/`. Note merge overlap with Task 4 in `app.js`/template.
 - **Verification**: after generation `ls public/downloads | grep -c '\.skill$'` = 0; `grep panel-download-skill public/index.html` matches; Playwright: link `href` equals zip link `href`, `download` attr ends `.skill`.
 
-### Task 6: Create gitignored asdp-wave.css theme (depends on Tasks 3, 4, 5 for class names)
-- **Status**: done
+### Task 6: Create a gitignored example theme (depends on Tasks 3, 4, 5 for class names)
+- **Status**: pending
 - **Date**: 2026-09-29
-- **Related file**: `themes/asdp-wave.css`, `.gitignore`, `.dockerignore`
-- **Objective**: Add `/themes/` to `.gitignore` and `themes/` to `.dockerignore`. Write `themes/asdp-wave.css` porting the Zensical Wave tokens to skill-indexer's `--color-*`/`--font-*`/`--radius-*` variables, in all three places (`:root`, `:root[data-theme="dark"]`, `@media (prefers-color-scheme: dark) :root:not([data-theme="light"])`), with dark = Wave slate (not Nord). Add Google Fonts `@import` for Montserrat/Manrope/JetBrains Mono, Montserrat headings (`.site-title`, `.panel-name`, `.card-name`), 4px ribbon `::after` on `.site-header`, cyan focus ring, 140ms color transitions disabled under `prefers-reduced-motion`. Use `/frontend-design` + `/design-test-frontend` per user rules. No JS file.
-- **Verification**: `git check-ignore themes/asdp-wave.css` prints the path; `git status --porcelain` shows no `themes/`; `grep -c 'data-theme="dark"\|prefers-color-scheme' themes/asdp-wave.css` ≥ 2; generate with `--extra-css themes/asdp-wave.css` and screenshot both themes with Playwright to confirm primary `#1e398d` on the CTA in light and slate bg `#14182a` in dark.
+- **Related file**: `themes/brand.css`, `.gitignore`, `.dockerignore`
+- **Objective**: Add `/themes/` to `.gitignore` and `themes/` to `.dockerignore`. Write a local `themes/brand.css` that overrides `--color-*`/`--font-*`/`--radius-*` in all three places (`:root`, `:root[data-theme="dark"]`, `@media (prefers-color-scheme: dark) :root:not([data-theme="light"])`), plus a thin accent `::after` bar on `.site-header`, a focus ring, and transitions disabled under `prefers-reduced-motion`. No JS file.
+- **Verification**: `git check-ignore themes/brand.css` prints the path; `git status --porcelain` shows no `themes/`; `grep -c 'data-theme="dark"\|prefers-color-scheme' themes/brand.css` ≥ 2; generate with `--extra-css themes/brand.css` and screenshot both themes with Playwright to confirm the accent color applies in light and the dark surface in dark.
 
 ### Task 7: Unit tests for new behavior (depends on Tasks 1–5)
 - **Status**: done
@@ -185,7 +173,7 @@ Done when all hold, each checkable by script:
 - **Date**: 2026-09-29
 - **Related file**: `examples/skills/`
 - **Objective**: Run generator with all flags on `examples/skills`, serve `public/` with a static server under `--base-url /marketplace`, and confirm assets, extras, panel commands, and downloads resolve.
-- **Verification**: `go run . --skill-dir examples/skills --output-dir public --base-url /marketplace --repository-url https://example.com/g/skills.git --site-name "ASDP Skills" --extra-css themes/asdp-wave.css`; `curl -sf localhost:PORT/marketplace/assets/extra/asdp-wave.css` and `/marketplace/downloads/find-skills.zip` return 200; gofmt/vet/test clean.
+- **Verification**: `go run . --skill-dir examples/skills --output-dir public --base-url /marketplace --repository-url https://example.com/g/skills.git --site-name "Example Skills" --extra-css themes/brand.css`; `curl -sf localhost:PORT/marketplace/assets/extra/brand.css` and `/marketplace/downloads/find-skills.zip` return 200; gofmt/vet/test clean.
 
 ## FAQ
 
@@ -219,18 +207,18 @@ Done when all hold, each checkable by script:
 10. Extra files: (a) `assets/extra/<basename>` is shared between CSS and JS; should the duplicate-basename check cover both lists together (a.css and a.js are fine, a.css twice or `x/a.css` + `y/a.css` error)? (b) The extra `<script>` uses `defer` while `app.js` is loaded without it. Should the extra JS run before or after `app.js` initializes (it loads after in DOM order, `defer` runs after parsing, so it may run after `app.js`'s `DOMContentLoaded` handler is registered but that is fine)? Confirm `defer` is what you want vs plain blocking like `app.js`. (c) Should a directory or non-`.css`/`.js` extension be rejected, or accept any file?
 
    **Answer:** (a) One duplicate check across both lists, keyed by basename (`a.css`+`a.js` fine, same basename twice errors). (b) Use plain blocking `<script src>` placed right after `app.js`, matching it; Task 2 is updated (no `defer`). (c) Reject directories; require `.css` for `--extra-css` and `.js` for `--extra-js`.
-11. `themes/asdp-wave.css` is gitignored and not embedded, so it will not be in the Docker image or CI. Task 9 and Objective 6 rely on it existing locally. Should the `Dockerfile`/`.dockerignore` and `examples/.gitlab-ci.yml` stay unaware of it (operators mount their own CSS), and should `.dockerignore` also list `themes/`? Also confirm the theme should only contain ASDP brand assets/fonts references that are acceptable to keep private (fonts via Google `@import` add third parties beyond the two Google Fonts requests AGENTS.md already allows; fine because it is opt-in?).
+11. `themes/brand.css` is gitignored and not embedded, so it will not be in the Docker image or CI. Task 9 and Objective 6 rely on a local theme file existing. Should the `Dockerfile`/`.dockerignore` and `examples/.gitlab-ci.yml` stay unaware of it (operators mount their own CSS), and should `.dockerignore` also list `themes/`? Fonts via a Google `@import` in a theme add third parties beyond the two Google Fonts requests AGENTS.md already allows; fine because it is opt-in?
 
    **Answer:** Dockerfile and CI stay unaware; operators mount their own CSS. Add `themes/` to `.dockerignore` alongside `.gitignore`. The Google Fonts `@import` inside the theme is acceptable because the theme is opt-in and private.
-12. Theme scope: the Wave theme must override `--color-*`, `--font-*`, `--radius-*` in all three blocks, but I have not yet enumerated the actual token names in `style.css` (only `.site-header` at line 174 and 660 are duplicated there, suggesting a responsive override). Is it acceptable for me to add missing tokens to `style.css` (keeping light/dark blocks identical, as AGENTS.md requires) if the theme needs something not yet tokenized (e.g. `--font-display`, `--shadow-*`, ribbon gradient), or must the theme work with the existing token set only?
+12. Theme scope: a brand theme must override `--color-*`, `--font-*`, `--radius-*` in all three blocks, but I have not yet enumerated the actual token names in `style.css` (only `.site-header` at line 174 and 660 are duplicated there, suggesting a responsive override). Is it acceptable for me to add missing tokens to `style.css` (keeping light/dark blocks identical, as AGENTS.md requires) if the theme needs something not yet tokenized (e.g. `--font-display`, `--shadow-*`, ribbon gradient), or must the theme work with the existing token set only?
 
    **Answer:** Yes, may add missing tokens to `style.css` (e.g. `--font-display` defaulting to `--font-sans`), identical in all three blocks. Prefer the existing token set; the ribbon bar is theme-only via `::after`, no token.
-13. Process: the user rules require tracking work as GitLab issues (`workflow::*` labels, `<iid>-<slug>` branches), while AGENTS.md requires `<model-name>/<feature|fix|refactor>/<slug>` branches. Which naming wins for this work? Should I create one issue per task (9 issues) or one epic-style issue for the plan, and does this repo have a GitLab remote configured (the footer links to `gitlab.com/endekasoft/skill-indexer`)? Also commit granularity: one commit per task (Conventional Commits, scope e.g. `feat(site)`), correct?
+13. Process: which branch naming applies (`<iid>-<slug>` vs AGENTS.md's `<model-name>/<feature|fix|refactor>/<slug>`)? Should issues be created per task? Also commit granularity: one commit per task (Conventional Commits, scope e.g. `feat(site)`), correct?
 
-   **Answer:** Branch naming follows the project AGENTS.md: `<model-name>/feature/<slug>`. Per-task GitLab issues are created only with the user's go-ahead at implementation time (this project is open source; confirm target before publishing anything). One Conventional Commit per task (e.g. `feat(site): ...`).
-14. Skill-tool rules: Task 6 and the header work call for `/frontend-design` and `/design-test-frontend`, and the repo has `DESIGN.md`/`PRODUCT.md`. `/design-test-frontend` is not in my available skills list (only `frontend-design`, `impeccable`, `playwright-cli`, `web-design-guidelines`, etc.). Which should I substitute for the design test (e.g. `playwright-cli` screenshots plus `web-design-guidelines`), or skip?
+   **Answer:** Branch naming follows the project AGENTS.md: `<model-name>/feature/<slug>`. No issues are created unless the maintainer asks. One Conventional Commit per task (e.g. `feat(site): ...`).
+14. Design verification: the repo has `DESIGN.md`/`PRODUCT.md`. How should the header and theme work be visually verified (e.g. `playwright-cli` screenshots plus a web-design review), or skipped?
 
-   **Answer:** `/design-test-frontend` is unavailable here; substitute `playwright-cli` screenshots (light + dark, 375px + 1280px) plus `web-design-guidelines`.
+   **Answer:** Use `playwright-cli` screenshots (light + dark, 375px + 1280px) plus a `web-design-guidelines` review.
 15. Tests: existing `render_test.go` calls `Render(skills, dir, baseURL)`. Changing the signature means updating those call sites (not a behavior change). Also `cmd/root_test.go` is new and `cmd` has package-level flag vars, so a `normalizeRepoURL` test is easy but flag-parsing tests are not. Is it enough to unit-test the normalization functions (`normalizeBaseURL`, new `normalizeRepoURL`) and not the cobra wiring?
 
    **Answer:** Enough: unit-test `normalizeBaseURL` and the new `normalizeRepoURL`, plus site-level tests through `site.Render`. Cobra wiring is covered by Task 9's end-to-end run. Existing `Render` call sites in `render_test.go` get updated for the new signature.

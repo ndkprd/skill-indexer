@@ -113,7 +113,7 @@ func TestRenderDefaultsOmitOptionalParts(t *testing.T) {
 
 func TestRenderSiteNameAndRepoURL(t *testing.T) {
 	outDir := t.TempDir()
-	opts := Options{SiteName: "ASDP Skills", RepoURL: "https://example.com/g/skills.git"}
+	opts := Options{SiteName: "Example Skills", RepoURL: "https://example.com/g/skills.git"}
 	if err := Render(fixtureSkills(), outDir, opts); err != nil {
 		t.Fatalf("Render() error = %v", err)
 	}
@@ -121,7 +121,7 @@ func TestRenderSiteNameAndRepoURL(t *testing.T) {
 	indexHTML := readFile(t, filepath.Join(outDir, "index.html"))
 	for _, want := range []string{
 		`<h1 class="site-title">`,
-		`<title>ASDP Skills</title>`,
+		`<title>Example Skills</title>`,
 		`window.__REPO_URL__ = "https://example.com/g/skills.git";`,
 		`data-install-cmd="all"`,
 	} {

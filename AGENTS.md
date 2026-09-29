@@ -96,7 +96,7 @@ shape each subtest needs.
   `BaseURL`). The panel and the banner share one Project/Global scope, and
   `app.js` builds both commands from `installCommand`/`installAllCommand`.
   The `.skill` download is the same zip with a different `download`
-  attribute — never write a second file. A brand theme such as ASDP Wave
+  attribute — never write a second file. A private brand theme
   lives in the gitignored `themes/` dir, not in the repo.
 - **Assets are vendored, not CDN-loaded** (except the two Google Fonts
   requests for IBM Plex Sans/Mono, which degrade to the system-font fallback
