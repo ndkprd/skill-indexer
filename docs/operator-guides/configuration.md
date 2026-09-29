@@ -11,15 +11,15 @@ either a CLI flag or a convention about the shape of a `SKILL.md` file.
 
 ## CLI flags
 
-| Flag            | Type   | Default  | Description                                                                                                                          |
-| --------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `--skill-dir`   | string | `skills` | Directory containing skill subdirectories to scan. Each immediate subdirectory must contain a `SKILL.md`.                            |
-| `--output-dir`  | string | `public` | Directory to write the generated static site into. **Cleared and recreated on every run** — anything already there is deleted first. |
-| `--repository-url` | string | — | Git URL of the repository holding the skills. Switches install commands to `npx skills add <url> --skill <name>` and adds an "Install everything" banner. See [Repository install mode](#repository-install-mode). |
-| `--site-name`   | string | —        | Site title shown above the search field (and the install-everything banner); also used as the page `<title>`. Replaces the `skill-indexer` wordmark. |
-| `--extra-css`   | string, repeatable | — | CSS file copied to `assets/extra/` and loaded after the built-in stylesheet. See [Theming](#theming). |
-| `--extra-js`    | string, repeatable | — | JS file copied to `assets/extra/` and loaded after `app.js`. |
-| `--help` / `-h` | flag   | —        | Prints usage text.                                                                                                                   |
+| Flag               | Type               | Default  | Description                                                                                                                                                                                                        |
+| ------------------ | ------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `--skill-dir`      | string             | `skills` | Directory containing skill subdirectories to scan. Each immediate subdirectory must contain a `SKILL.md`.                                                                                                          |
+| `--output-dir`     | string             | `public` | Directory to write the generated static site into. **Cleared and recreated on every run** — anything already there is deleted first.                                                                               |
+| `--repository-url` | string             | —        | Git URL of the repository holding the skills. Switches install commands to `npx skills add <url> --skill <name>` and adds an "Install everything" banner. See [Repository install mode](#repository-install-mode). |
+| `--site-name`      | string             | —        | Site title shown above the search field (and the install-everything banner); also used as the page `<title>`. Replaces the `skill-indexer` wordmark.                                                               |
+| `--extra-css`      | string, repeatable | —        | CSS file copied to `assets/extra/` and loaded after the built-in stylesheet. See [Theming](#theming).                                                                                                              |
+| `--extra-js`       | string, repeatable | —        | JS file copied to `assets/extra/` and loaded after `app.js`.                                                                                                                                                       |
+| `--help` / `-h`    | flag               | —        | Prints usage text.                                                                                                                                                                                                 |
 
 Example:
 

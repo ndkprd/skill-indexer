@@ -90,7 +90,7 @@ shape each subtest needs.
 - **Optional generator flags** (all off by default; `site.Options` carries
   them into `Render`): `--repository-url` (repo-mode install commands via
   inline `window.__REPO_URL__`, plus an install-everything banner living
-  *inside* `.site-header` so `inert` covers it), `--site-name` (title row,
+  _inside_ `.site-header` so `inert` covers it), `--site-name` (title row,
   replaces the wordmark), `--extra-css` / `--extra-js` (copied to
   `assets/extra/`, linked after `style.css` / `app.js`, prefixed by
   `BaseURL`). The panel and the banner share one Project/Global scope, and
