@@ -1,3 +1,28 @@
+## [0.3.0] - 2026-09-29
+
+### Features
+
+- *(cli)* Add --repository-url, --site-name, --extra-css and --extra-js flags
+- *(site)* Repo-mode install, install-everything banner, site title, .skill download
+
+### Documentation
+
+- *(plan)* Add plan 002 for repo-url install, site name, theming
+- Document repository-url, site-name, extra assets and .skill download
+- Fix markdown lint in config table and AGENTS
+- *(plan)* Mark plan 002 tasks done
+- Remove internal references from plan 002, AGENTS and tests
+- *(examples)* Add sample dracula and monokai themes
+- Remove internal references from plan 001 and gitlab-cli example
+
+### Testing
+
+- *(site)* Cover repo URL, site name, extras and .skill link
+
+### Miscellaneous Tasks
+
+- Gitignore and dockerignore local themes dir
+
 ## [0.2.0] - 2026-09-26
 
 ### Features
